@@ -16,19 +16,7 @@
 <div align="center">
 <img src="png/player.gif" alt="操作演示" width="600"/>
 <br/>
-<em>完整操作演示：播放控制、进度条拖拽、播放列表切换</em>
 </div>
-
-<details>
-<summary>📸 查看更多截图</summary>
-
-### 主界面
-<img src="png/main_page.png" alt="主界面" width="500"/>
-
-### 播放列表
-<img src="png/playlist.png" alt="播放列表" width="500"/>
-
-</details>
 
 ## 🚀 快速启动
 
@@ -52,12 +40,12 @@ adb shell "music_player &"
 
 ## 📖 完整文档
 
-### 📚 [**>> 查看完整技术文档 <<**](music_player/README.md)
+### [**>> 查看完整技术文档 <<**](music_player/README.md)
 
 包含详细的配置说明、API参考、架构设计和故障排除指南。
 
 ## 🤝 贡献 & 许可
 
-- 📄 **许可证**：[Apache License 2.0](LICENSE)
-- 🐛 **问题反馈**：欢迎提交 Issue 和 Pull Request
-- 🙏 **致谢**：感谢 OpenVela、LVGL 社区及所有贡献者
+-  **许可证**：[Apache License 2.0](LICENSE)
+- **问题反馈**：欢迎提交 Issue 和 Pull Request
+- **致谢**：感谢 OpenVela、LVGL 社区及所有贡献者
