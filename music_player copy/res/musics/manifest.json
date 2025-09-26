@@ -1,0 +1,20 @@
+{
+  "musics": [
+    {
+      "path": "Love Story.mp3",
+      "name": "Love Story",
+      "artist": "Taylor Swift",
+      "cover": "Love Story.png",
+      "total_time": 236000,
+      "color": "#FFB6C1"
+    },
+    {
+      "path": "Take me  hand.mp3",
+      "name": "Take My Hand",
+      "artist": "The Cab",
+      "cover": "Take me hand.png",
+      "total_time": 254198,
+      "color": "#4169E1"
+    }
+  ]
+}
