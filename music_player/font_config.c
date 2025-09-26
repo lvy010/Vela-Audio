@@ -1,15 +1,11 @@
-//
-// Vela 音乐播放器 - 字体配置实现
-// Created by Vela on 2025/8/05
-// 支持UTF-8编码和中文显示的字体配置实现
-//
+// Font Configuration
 
 #include "font_config.h"
 #include <string.h>
 #include <stdio.h>
 #include <unistd.h>
 
-// FreeType字体实例
+// FreeType fonts
 #if LV_USE_FREETYPE
 lv_font_t* misans_font_16 = NULL;
 lv_font_t* misans_font_20 = NULL;
@@ -17,7 +13,7 @@ lv_font_t* misans_font_24 = NULL;
 lv_font_t* misans_font_28 = NULL;
 lv_font_t* misans_font_32 = NULL;
 
-// FreeType字体支持暂时禁用，使用LVGL内置字体
+// FreeType disabled, using built-in fonts
 // static lv_ft_info_t misans_info_16;
 // static lv_ft_info_t misans_info_20;
 // static lv_ft_info_t misans_info_24;

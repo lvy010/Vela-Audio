@@ -22,13 +22,13 @@ PRIORITY = 100
 STACKSIZE = 16384  # 减少栈大小从40KB到16KB
 MODULE = $(CONFIG_LVX_USE_DEMO_MUSIC_PLAYER)
 
-# 🎯 音乐播放器源文件 - 使用模拟器兼容版本
-CSRCS = music_player.c audio_ctl_simulator.c wifi.c splash_screen.c playlist_manager.c font_config.c
+# 音乐播放器源文件 - 使用模拟器兼容版本
+CSRCS = music_player.c audio_ctl.c wifi.c splash_screen.c playlist_manager.c font_config.c
 
 # 主入口文件
 MAINSRC = music_player_main.c
 
-# 🎵 模拟器环境配置
+# 模拟器环境配置
 CFLAGS += -DUSING_SIMULATOR_AUDIO=1
 
 # 基础库链接

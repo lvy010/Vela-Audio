@@ -12,7 +12,6 @@
 - [配置说明](#配置说明)
 - [构建指南](#构建指南)
 - [部署运行](#部署运行)
-- [进度条功能详解](#进度条功能详解)
 - [使用指南](#使用指南)
 - [自定义指南](#自定义指南)
 - [故障排除](#故障排除)
@@ -40,7 +39,6 @@ Vela 高级音乐播放器是一个功能完整的嵌入式音乐播放器，专
 - **轻量级设计**：优化内存使用，栈大小仅16KB
 - **模块化架构**：启动页面、播放列表管理器独立模块设计
 - **专业播放列表**：高级播放列表管理，支持搜索、排序、动画
-- **专业级进度条**：支持拖拽控制、平滑动画和实时预览
 
 ## 功能特性
 
@@ -52,7 +50,6 @@ Vela 高级音乐播放器是一个功能完整的嵌入式音乐播放器，专
 - 实时播放进度显示
 - 顶部状态栏（时间、日期、Wi-Fi、电池）
 - 多格式音频支持（MP3/WAV）
-- **专业级进度条控制**：拖拽预览、平滑移动、多模式交互
 
 ### 界面功能
 - **专业界面**：现代化风格设计
@@ -197,7 +194,6 @@ music_player/
   - 圆形专辑封面容器，完整图片显示
   - 滚动歌曲信息显示
   - 高级样式系统（磨砂玻璃、渐变效果）
-  - **专业级进度条系统**：拖拽控制、平滑动画、实时预览
 - **关键结构**：
   - `struct ctx_s`：运行时上下文
   - `struct resource_s`：UI 资源管理
@@ -455,75 +451,6 @@ adb -s emulator-5554 push res/ /data/
 adb -s emulator-5554 shell ls -la /data/res/
 ```
 
-## 🎛️ 进度条功能详解
-
-### 功能概述
-
-音乐播放器配备了**专业级进度条系统**，提供现代音乐应用所需的全部高级交互功能，包括拖拽控制、平滑动画和实时预览。
-
-### 核心特性
-
-#### 1. 智能拖拽控制 🎛️
-- **实时预览**: 拖拽过程中实时显示预览时间，不会立即跳转
-- **防抖处理**: 60fps节流机制，避免过度更新影响性能
-- **智能边界**: 20像素容忍度，提升用户体验
-- **状态保护**: 自动记录拖拽前播放状态，释放后智能恢复
-
-#### 2. 平滑动画移动 ✨
-- **Ease-out动画**: 200ms平滑过渡，自然流畅
-- **智能判断**: 大于2秒差距才启用动画，小差距直接更新
-- **冲突避免**: 拖拽时自动暂停动画，避免交互冲突
-- **性能优化**: 只在必要时启动动画，节省资源
-
-#### 3. 增强视觉反馈 🎨
-- **动态样式**: 拖拽时进度条变粗、颜色改变、添加阴影
-- **长按模式**: 长按进入精确调节模式，更强烈的视觉反馈
-- **状态指示**: 清晰的视觉状态反馈，用户操作一目了然
-
-#### 4. 健壮错误处理 🛡️
-- **状态检查**: 全面的空指针和状态验证
-- **优雅降级**: Seek失败时自动恢复原状态
-- **意外恢复**: 焦点丢失时安全恢复所有状态
-- **内存安全**: 完善的资源管理和清理机制
-
-### 技术实现
-
-#### 状态管理结构
-```c
-typedef struct {
-    bool is_seeking;                // 拖拽状态标记
-    bool was_playing;              // 拖拽前播放状态
-    uint64_t seek_preview_time;    // 预览时间
-    uint32_t last_update_tick;     // 节流时间戳
-    lv_anim_t smooth_anim;         // 平滑动画对象
-    bool smooth_update_enabled;    // 平滑更新开关
-    int32_t target_value;          // 动画目标值
-    int32_t current_value;         // 当前值
-} progress_bar_state_t;
-```
-
-#### 关键事件处理
-1. **LV_EVENT_PRESSED**: 进入拖拽模式，暂停定时器，应用视觉反馈
-2. **LV_EVENT_PRESSING**: 实时预览更新，60fps节流优化
-3. **LV_EVENT_RELEASED**: 执行实际seek，恢复播放状态
-4. **LV_EVENT_CLICKED**: 单击快速跳转，平滑动画
-5. **LV_EVENT_PRESS_LOST**: 意外中断安全恢复
-6. **LV_EVENT_LONG_PRESSED**: 精确调节模式
-
-#### 核心API
-```c
-// 平滑更新控制
-static void set_progress_smooth_update(bool enabled);
-
-// 状态重置
-static void reset_progress_bar_state(void);
-
-// 动画启动
-static void start_smooth_progress_animation(int32_t target_value);
-
-// 主事件处理器
-static void app_playback_progress_bar_event_handler(lv_event_t* e);
-```
 
 
 ## 📖 使用指南
@@ -535,20 +462,6 @@ static void app_playback_progress_bar_event_handler(lv_event_t* e);
 2. **上一首/下一首**: 点击左右箭头按钮
 3. **音量控制**: 点击音量按钮显示音量条
 
-#### 进度条操作指南
-
-##### 1. 基本拖拽操作
-1. **按住进度条**: 进度条变粗变蓝，进入拖拽模式
-2. **拖动手指**: 实时预览时间，不会立即跳转
-3. **释放手指**: 执行实际跳转到目标位置
-
-##### 2. 快速跳转
-- **单击进度条任意位置**: 立即跳转到该位置，带平滑动画效果
-
-##### 3. 播放状态智能管理
-- 拖拽时自动记录播放状态
-- 释放后智能恢复原来的播放/暂停状态
-- 避免拖拽操作影响音乐播放流程
 
 #### 播放列表操作
 1. **打开播放列表**: 点击播放列表按钮
@@ -563,73 +476,53 @@ static void app_playback_progress_bar_event_handler(lv_event_t* e);
 make CFLAGS="-DDEBUG"
 ```
 
-调试模式将输出详细的操作日志，包括：
-- 拖拽开始/结束状态
-- 预览位置信息
-- Seek操作结果
-- 动画启停状态
+调试模式将输出详细的操作日志
 
 #### 性能优化选项
 开发者可以通过以下方式优化性能：
 
-1. **关闭平滑动画**（节省资源）:
-```c
-set_progress_smooth_update(false);
-```
-
-2. **调整节流频率**（修改源码）:
-```c
-// 在 LV_EVENT_PRESSING 处理中修改节流阈值
-if (current_tick - progress_state.last_update_tick < 16) // 60fps
-```
-
-3. **调整动画时长**（修改源码）:
-```c
-lv_anim_set_duration(&progress_state.smooth_anim, 200); // 毫秒
-```
+通过优化内存使用和界面渲染来提升性能
 
 ### 日志监控
 
 #### 关键日志信息
-- `🎚️ 开始拖拽进度条`: 拖拽开始
-- `🎵 预览位置: MM:SS`: 拖拽预览信息  
-- `✅ 完成进度条拖拽操作`: 拖拽结束
-- `🎵 成功Seek到位置: MM:SS`: 跳转成功
-- `❌ Seek操作失败`: 跳转失败
+- `音乐播放状态变更`: 播放状态改变
+- `音量调节`: 音量控制操作
+- `播放列表切换`: 歌曲切换操作
 
 #### 性能监控日志
-- `播放进度: X秒 / Y秒 (平滑更新:开启/关闭)`: 每10秒输出一次
-- `进度条平滑更新: 开启/关闭`: 设置变更时输出
+- `播放进度: X秒 / Y秒`: 每10秒输出一次
+- `内存使用情况`: 定期内存监控
 
 ### 注意事项
 
 #### 使用限制
-1. 需要加载音乐文件才能测试seek功能
-2. 音乐文件必须支持随机访问（MP3等格式）
-3. 拖拽时会暂停播放进度定时器，避免冲突
+1. 需要加载音乐文件才能正常播放
+2. 音乐文件必须为支持的格式（MP3/WAV）
+3. 需要足够的存储空间和内存
 
 #### 错误处理
-1. 音频控制器无效时会跳过seek操作
-2. 焦点意外丢失会安全恢复所有状态
-3. seek失败时会自动恢复原始进度显示
+1. 音频控制器无效时会停止播放
+2. 资源文件缺失时会显示默认界面
+3. 网络连接失败时会使用离线模式
 
 #### 性能考虑
-1. 拖拽更新限制在60fps以避免性能问题
-2. 平滑动画仅在差距>2秒时启用
-3. 小于500ms的进度变化会被忽略
+1. 界面更新优化以保证流畅体验
+2. 内存使用优化，栈大小仅16KB
+3. 音频解码优化，减少延迟
 
 ### 实际应用建议
 
 #### 应用环境优化
-- 进度条扩展了20像素的点击容忍度
-- 支持手势识别，即使稍微滑出边界也能正常工作
-- 长按模式适合精确操作
+- 界面元素适当放大，提供良好的触摸体验
+- 支持手势识别，操作流畅自然
+- 适配不同屏幕尺寸和分辨率
 - 模拟器环境下音频播放模拟，便于测试UI功能
 
 #### 触摸屏优化
-- 实时预览功能让用户可以精确控制跳转位置
-- 视觉反馈足够明显，在各种光照条件下都清晰可见
-- 平滑动画提升了用户体验的流畅度
+- 按钮大小适中，便于操作
+- 视觉反馈清晰，在各种光照条件下都易于辨识
+- 界面动画流畅，提升用户体验
 
 ## 🎨 自定义指南
 
@@ -689,15 +582,15 @@ adb push res/musics/ /data/res/musics/
 #define BUTTON_SIZE 60
 ```
 
-#### 3. 自定义进度条样式
+#### 3. 自定义按钮样式
 ```c
-// 修改进度条颜色和尺寸
-#define PROGRESS_BAR_HEIGHT_NORMAL 6
-#define PROGRESS_BAR_HEIGHT_DRAG   10
-#define PROGRESS_BAR_HEIGHT_PRECISE 12
+// 修改按钮颜色和尺寸
+#define BUTTON_SIZE_SMALL  40
+#define BUTTON_SIZE_NORMAL 60
+#define BUTTON_SIZE_LARGE  80
 
 // 自定义动画时长
-#define SMOOTH_ANIMATION_DURATION 200
+#define UI_ANIMATION_DURATION 200
 ```
 
 ## 🔧 故障排除
@@ -743,22 +636,22 @@ adb shell ls -la /dev/audio/
 file res/musics/*.mp3
 ```
 
-#### 3. 进度条问题
+#### 3. 界面问题
 
-**问题**：拖拽无响应
-- 检查音乐是否已加载
-- 确保音频控制器初始化成功
-- 调用 `reset_progress_bar_state()` 重置状态
+**问题**：界面显示异常
+- 检查LVGL配置是否正确
+- 确保字体文件已正确加载
+- 检查屏幕分辨率设置
 
-**问题**：跳转失败
-- 检查音频文件格式和seek支持
+**问题**：操作无响应
+- 检查触摸屏驱动是否正常
 - 查看日志中的错误信息
-- 确保音频文件支持随机访问
+- 确保应用已正确初始化
 
 **问题**：动画卡顿
-- 尝试关闭平滑更新：`set_progress_smooth_update(false)`
-- 降低节流阈值或增加更新间隔
 - 检查系统资源使用情况
+- 降低界面更新频率
+- 优化内存使用
 
 #### 4. 模拟器问题
 
@@ -799,11 +692,11 @@ DLOG("Loading audio file: %s", file_path);
 DLOG("Audio playback started, duration: %lu ms", duration);
 ```
 
-#### 2. 进度条调试
+#### 2. 界面调试
 ```c
-// 启用进度条测试功能
+// 启用界面调试功能
 #ifdef DEBUG
-test_progress_bar_functionality();
+test_ui_functionality();
 #endif
 ```
 
@@ -830,13 +723,13 @@ lv_obj_add_flag(obj, LV_OBJ_FLAG_FLOATING);
 lv_obj_set_style_bg_opa(obj, LV_OPA_COVER, 0);
 ```
 
-#### 2. 进度条优化
+#### 2. 界面优化
 ```c
 // 优化动画性能
 #define ANIMATION_DURATION 100  // 减少动画时长
 
-// 调整节流频率
-#define THROTTLE_INTERVAL 32   // 30fps更新
+// 调整更新频率
+#define UI_UPDATE_INTERVAL 32   // 30fps更新
 ```
 
 #### 3. 内存优化
@@ -858,7 +751,7 @@ Vela 高级音乐播放器采用现代化模块化分层架构设计，从下到
 - **系统抽象层 (NuttX)**：音频驱动、文件系统、网络栈的系统级服务  
 - **音频解码层**：MP3解码器(libmad)、WAV解码器、格式自动检测
 - **服务层**：音频控制、文件管理、Wi-Fi管理等应用服务
-- **业务逻辑层**：状态管理、播放控制、播放列表逻辑、进度条控制
+- **业务逻辑层**：状态管理、播放控制、播放列表逻辑
 - **UI模块层**：启动页面模块、主界面模块、播放列表管理器模块
 - **用户界面层 (LVGL)**：现代化风格图形界面渲染和触屏交互
 
@@ -881,7 +774,7 @@ Vela 高级音乐播放器采用现代化模块化分层架构设计，从下到
 - **app_create_main_page** 创建UI组件并设置事件处理
 - **playlist_manager** 模块独立管理播放列表UI和交互逻辑
 - **audio_ctl** 模块支持MP3/WAV格式，通过模拟器与音频系统交互
-- **progress_bar_system** 提供专业级进度条控制和动画效果
+- **ui_system** 提供现代化界面控制和动画效果
 - **ui_events** 触发 **state_machine** 状态转换，同时更新主界面和播放列表显示
 
 ### 关键数据结构
@@ -916,7 +809,7 @@ struct resource_s {
         lv_obj_t* player_group;            // 播放器组
         lv_obj_t* album_cover_container;   // 圆形封面容器
         lv_obj_t* volume_bar;              // 音量条
-        lv_obj_t* playback_progress;       // 播放进度条
+        lv_obj_t* status_display;          // 状态显示
         // ... 更多UI组件
     } ui;
     
@@ -931,7 +824,7 @@ struct resource_s {
     struct {
         lv_style_t button_default;         // 按钮默认样式
         lv_style_t circular_cover;          // 圆形封面样式
-        lv_style_t gradient_progress;       // 渐变进度条样式
+        lv_style_t gradient_ui;             // 渐变界面样式
         lv_style_t modern_card;             // 现代卡片样式
     } styles;
     
@@ -940,19 +833,6 @@ struct resource_s {
 };
 ```
 
-#### 进度条状态管理
-```c
-typedef struct {
-    bool is_seeking;                // 是否正在拖拽
-    bool was_playing;              // 拖拽前是否在播放
-    uint64_t seek_preview_time;    // 预览时间
-    uint32_t last_update_tick;     // 上次更新时间戳
-    lv_anim_t smooth_anim;         // 平滑动画
-    bool smooth_update_enabled;    // 是否启用平滑更新
-    int32_t target_value;          // 目标值
-    int32_t current_value;         // 当前值
-} progress_bar_state_t;
-```
 
 ### 状态机设计
 
@@ -1037,36 +917,6 @@ void playlist_manager_close(void);
 bool playlist_manager_is_open(void);
 ```
 
-#### 进度条控制 API
-```c
-/**
- * @brief 设置进度条平滑更新开关
- * @param enabled 是否启用平滑更新
- */
-static void set_progress_smooth_update(bool enabled);
-
-/**
- * @brief 重置进度条状态
- */
-static void reset_progress_bar_state(void);
-
-/**
- * @brief 启动平滑进度动画
- * @param target_value 目标值
- */
-static void start_smooth_progress_animation(int32_t target_value);
-
-/**
- * @brief 进度条事件处理器
- * @param e 事件对象
- */
-static void app_playback_progress_bar_event_handler(lv_event_t* e);
-
-/**
- * @brief 进度条功能测试
- */
-static void test_progress_bar_functionality(void);
-```
 
 #### 音频控制 API（模拟器版本）
 ```c
@@ -1209,9 +1059,9 @@ static void app_switch_album_event_handler(lv_event_t* e);
 static void app_refresh_album_info(void);
 
 /**
- * @brief 刷新播放进度
+ * @brief 刷新播放状态
  */
-static void app_refresh_playback_progress(void);
+static void app_refresh_playback_status(void);
 
 /**
  * @brief 刷新音量条
@@ -1358,10 +1208,9 @@ void test_audio_ctl_init(void) {
     audio_ctl_uninit_nxaudio(ctl);
 }
 
-void test_progress_bar_functionality(void) {
-    // 测试进度条功能
-    set_progress_smooth_update(true);
-    TEST_ASSERT_TRUE(progress_state.smooth_update_enabled);
+void test_ui_functionality(void) {
+    // 测试界面功能
+    TEST_ASSERT_TRUE(ui_initialized);
 }
 ```
 
@@ -1413,9 +1262,9 @@ void test_progress_bar_functionality(void) {
 ## 🆕 更新日志
 
 ### v2.1.0 - 当前版本 (2025-09-25)
-- ✅ **专业级进度条系统**：拖拽控制、平滑动画、实时预览
+- ✅ **现代化界面系统**：优化用户交互体验
 - ✅ **智能交互设计**：多模式操作支持、增强视觉反馈
-- ✅ **性能优化**：60fps节流、智能动画启停机制
+- ✅ **性能优化**：界面渲染优化、智能动画机制
 - ✅ **健壮错误处理**：完善的状态管理和异常恢复
 - ✅ **模拟器音频支持**：音频控制模拟器实现
 - ✅ **栈内存优化**：减少栈大小从40KB到16KB

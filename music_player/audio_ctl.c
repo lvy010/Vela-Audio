@@ -1,6 +1,4 @@
-/*********************
- *      INCLUDES
- *********************/
+// Includes
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -14,17 +12,13 @@
 #include <pthread.h>
 #include <sys/time.h>
 
-// 确保usleep可用
 #define _GNU_SOURCE
 
 #include "audio_ctl.h"
 
-// 模拟环境标志
 #define USING_SIMULATOR_AUDIO 1
-
-// 调试控制
 #ifndef AUDIO_DEBUG
-#define AUDIO_DEBUG 1
+#define AUDIO_DEBUG 0
 #endif
 
 #if AUDIO_DEBUG
@@ -36,21 +30,12 @@
 #define AUDIO_LOG(fmt, ...)
 #endif
 
-/*********************
- *  STATIC PROTOTYPES
- *********************/
-
+// Functions
 static uint32_t estimate_mp3_duration(off_t file_size);
 static void* monitor_thread_func(void* arg);
 static void* playback_simulation_thread(void* arg) __attribute__((unused));
 
-/*********************
- *  STATIC FUNCTIONS
- *********************/
-
-/**
- * @brief 基于文件大小估算MP3播放时长
- */
+// 估算MP3播放时长
 static uint32_t estimate_mp3_duration(off_t file_size)
 {
     // 假设平均比特率为128kbps
@@ -64,9 +49,7 @@ static uint32_t estimate_mp3_duration(off_t file_size)
     return 240; // 默认4分钟
 }
 
-/**
- * @brief 播放状态监控线程
- */
+// 播放状态监控线程
 static void* monitor_thread_func(void* arg)
 {
     audioctl_s* ctl = (audioctl_s*)arg;
@@ -102,9 +85,7 @@ static void* monitor_thread_func(void* arg)
     return NULL;
 }
 
-/**
- * @brief 模拟播放线程 (当前未使用，保留备用)
- */
+// 模拟播放线程
 static void* playback_simulation_thread(void* arg)
 {
     audioctl_s* ctl = (audioctl_s*)arg;
@@ -130,13 +111,9 @@ static void* playback_simulation_thread(void* arg)
     return NULL;
 }
 
-/*********************
- *   GLOBAL FUNCTIONS
- *********************/
+// Global Functions
 
-/**
- * @brief 检测音频文件格式
- */
+// 检测音频文件格式
 int audio_ctl_detect_format(const char *path)
 {
     if (!path) {
@@ -165,9 +142,7 @@ int audio_ctl_detect_format(const char *path)
     return AUDIO_FORMAT_UNKNOWN;
 }
 
-/**
- * @brief 初始化音频控制器（模拟器版本）
- */
+// 初始化音频控制器
 audioctl_s *audio_ctl_init_nxaudio(const char *path)
 {
     if (!path) {
@@ -180,7 +155,7 @@ audioctl_s *audio_ctl_init_nxaudio(const char *path)
     // 分配内存
     audioctl_s *ctl = (audioctl_s*)calloc(1, sizeof(audioctl_s));
     if (!ctl) {
-        AUDIO_LOG("内存分配失败");
+        // 内存分配失败 - 静默处理
         return NULL;
     }
     
@@ -204,10 +179,11 @@ audioctl_s *audio_ctl_init_nxaudio(const char *path)
         
         // 估算播放时长
         if (ctl->audio_format == AUDIO_FORMAT_MP3) {
-            ctl->total_duration_ms = estimate_mp3_duration(ctl->file_size);
-            AUDIO_LOG("估算MP3播放时长: %lu 秒", (unsigned long)ctl->total_duration_ms);
+            uint32_t duration_sec = estimate_mp3_duration(ctl->file_size);
+            ctl->total_duration_ms = duration_sec * 1000; // 转换为毫秒
+            AUDIO_LOG("估算MP3播放时长: %lu 秒 (%lu ms)", (unsigned long)duration_sec, (unsigned long)ctl->total_duration_ms);
         } else {
-            ctl->total_duration_ms = 240; // 默认4分钟
+            ctl->total_duration_ms = 240 * 1000; // 默认4分钟，转换为毫秒
         }
     } else {
         AUDIO_LOG("无法获取文件信息: %s", strerror(errno));
@@ -238,9 +214,7 @@ audioctl_s *audio_ctl_init_nxaudio(const char *path)
     return ctl;
 }
 
-/**
- * @brief 开始播放音频（模拟器版本）
- */
+// 开始播放音频
 int audio_ctl_start(audioctl_s *ctl)
 {
     if (!ctl) {
@@ -298,9 +272,7 @@ int audio_ctl_start(audioctl_s *ctl)
     return 0; // 成功
 }
 
-/**
- * @brief 暂停播放（模拟器版本）
- */
+// 暂停播放
 int audio_ctl_pause(audioctl_s *ctl)
 {
     if (!ctl || !ctl->nxplayer) {
@@ -326,9 +298,7 @@ int audio_ctl_pause(audioctl_s *ctl)
     return 0;
 }
 
-/**
- * @brief 恢复播放（模拟器版本）
- */
+// 恢复播放
 int audio_ctl_resume(audioctl_s *ctl)
 {
     if (!ctl || !ctl->nxplayer) {
@@ -354,9 +324,7 @@ int audio_ctl_resume(audioctl_s *ctl)
     return 0;
 }
 
-/**
- * @brief 停止播放（模拟器版本）
- */
+// 停止播放
 int audio_ctl_stop(audioctl_s *ctl)
 {
     if (!ctl || !ctl->nxplayer) {
@@ -394,9 +362,7 @@ int audio_ctl_stop(audioctl_s *ctl)
     return 0;
 }
 
-/**
- * @brief 设置音量（模拟器版本）
- */
+// 设置音量
 int audio_ctl_set_volume(audioctl_s *ctl, uint16_t vol)
 {
     if (!ctl || !ctl->nxplayer) {
@@ -413,9 +379,7 @@ int audio_ctl_set_volume(audioctl_s *ctl, uint16_t vol)
     return 0;
 }
 
-/**
- * @brief 获取当前播放位置（秒）（模拟器版本）
- */
+// 获取当前播放位置
 int audio_ctl_get_position(audioctl_s *ctl)
 {
     if (!ctl) {
@@ -429,9 +393,7 @@ int audio_ctl_get_position(audioctl_s *ctl)
     return (int)position_sec;
 }
 
-/**
- * @brief 跳转到指定位置（模拟器版本）
- */
+// 跳转到指定位置
 int audio_ctl_seek(audioctl_s *ctl, unsigned ms)
 {
     if (!ctl) {
@@ -439,15 +401,15 @@ int audio_ctl_seek(audioctl_s *ctl, unsigned ms)
         return -1;
     }
     
-    AUDIO_LOG("模拟跳转到位置: %u ms", ms);
+    AUDIO_LOG("模拟跳转到位置: %lu ms", (unsigned long)ms);
     
     pthread_mutex_lock(&ctl->control_mutex);
     
-    if (ms <= ctl->total_duration_ms * 1000) {
+    if (ms <= ctl->total_duration_ms) {
         ctl->current_position_ms = ms;
-        AUDIO_LOG("模拟位置更新成功: %u ms", ms);
+        AUDIO_LOG("模拟位置更新成功: %lu ms", (unsigned long)ms);
     } else {
-        AUDIO_LOG("跳转位置超出文件长度");
+        AUDIO_LOG("跳转位置超出文件长度: %lu ms > %lu ms", (unsigned long)ms, (unsigned long)ctl->total_duration_ms);
         pthread_mutex_unlock(&ctl->control_mutex);
         return -1;
     }
@@ -456,9 +418,7 @@ int audio_ctl_seek(audioctl_s *ctl, unsigned ms)
     return 0;
 }
 
-/**
- * @brief 释放音频控制器（模拟器版本）
- */
+// 释放音频控制器
 int audio_ctl_uninit_nxaudio(audioctl_s *ctl)
 {
     if (!ctl) {

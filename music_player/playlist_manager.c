@@ -1,46 +1,26 @@
-//
-// Vela 音乐播放器 - 极简播放列表管理器
-// 完全基于emergency_playlist.c的逻辑实现，确保零内存泄漏
-//
+// Playlist Manager
 
 #include "music_player.h"
 #include "playlist_manager.h"
-#include "font_config.h"  // 添加字体配置头文件
+#include "font_config.h"
 #include <stdio.h>
 
-// 外部变量声明
+// External variables
 extern struct resource_s R;
 extern struct ctx_s C;
 
-/*********************
- *      DEFINES
- *********************/
-
-// 增强播放列表配置 - 更大更清晰的显示
-#define MAX_PLAYLIST_ITEMS 6      // 增加显示项目数量 (从2增加到6)
-#define PLAYLIST_ITEM_HEIGHT 70   // 增加项目高度 (从40增加到70)
-#define PLAYLIST_NO_ANIMATION     // 禁用所有动画，对应EMERGENCY_NO_ANIMATION
-
-/*********************
- *  STATIC VARIABLES  
- *********************/
+// Defines
+#define MAX_PLAYLIST_ITEMS 6
+#define PLAYLIST_ITEM_HEIGHT 70
+#define PLAYLIST_NO_ANIMATION
+// Variables
 static lv_obj_t* playlist_container = NULL;
 static bool playlist_is_open = false;
 
-/*********************
- *  STATIC PROTOTYPES
- *********************/
+// Functions
 static void create_playlist_item(lv_obj_t* parent, int index);
 static void playlist_item_click_cb(lv_event_t* e);
 static void playlist_close_cb(lv_event_t* e);
-
-/*********************
- *  STATIC FUNCTIONS
- *********************/
-
-/**
- * @brief 创建单个播放列表项 - 增强版本，更大字体更清晰显示
- */
 static void create_playlist_item(lv_obj_t* parent, int index) {
     if (index >= R.album_count || index >= MAX_PLAYLIST_ITEMS) {
         return;

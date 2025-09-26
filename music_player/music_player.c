@@ -1,45 +1,6 @@
-//
-// Vela的音乐播放器 - 基于LVGL的现代化音乐播放器
-// Created by Vela on 2025/8/12
-// 核心音乐播放器功能实现，包含UI设计、动画效果、音频控制
-//
+// Music Player - LVGL based audio player
 
-/*
- * UI:
- *
- * TIME GROUP:
- *      TIME: 00:00:00
- *      DATE: 2025/08/12
- *
- * PLAYER GROUP:
- *      ALBUM GROUP:
- *          ALBUM PICTURE
- *          ALBUM INFO:
- *              ALBUM NAME
- *              ALBUM ARTIST
- *      PROGRESS GROUP:
- *          CURRENT TIME: 00:00/00:00
- *          PLAYBACK PROGRESS BAR
- *      CONTROL GROUP:
- *          PLAYLIST
- *          PREVIOUS
- *          PLAY/PAUSE
- *          NEXT
- *          AUDIO
- *
- * TOP Layer:
- *      VOLUME BAR
- *      PLAYLIST GROUP:
- *          TITLE
- *          LIST:
- *              ICON
- *              ALBUM NAME
- *              ALBUM ARTIST
- */
-
-/*********************
- *      INCLUDES
- *********************/
+// Includes
 
 #include "music_player.h"
 #include "playlist_manager.h"
@@ -95,23 +56,7 @@ static void app_create_error_page(void);
 static void app_create_main_page(void);
 static void app_create_top_layer(void);
 
-/* Timer starting functions */
-static void app_start_updating_date_time(void);
-
-/* Animation functions - DISABLED 旋转功能已禁用 */
-// static void app_start_cover_rotation_animation(void);
-// static void app_stop_cover_rotation_animation(void);
-// static void app_cover_rotation_anim_cb(void* obj, int32_t value);
-
-/* Album operations */
-static int32_t app_get_album_index(album_info_t* album);
-
-/* Album operations */
-void app_set_play_status(play_status_t status);
-static void app_set_playback_time(uint32_t current_time);
-static void app_set_volume(uint16_t volume);
-
-/* UI refresh functions */
+// Functions
 static void app_refresh_album_info(void);
 static void app_refresh_date_time(void);
 static void app_refresh_play_status(void);
@@ -119,6 +64,11 @@ static void app_refresh_playback_progress(void);
 static void app_refresh_playlist(void);
 static void app_refresh_volume_bar(void);
 static void app_refresh_volume_countdown_timer(void);
+
+// 添加缺失的静态函数声明
+static void app_set_volume(uint16_t volume);
+static void app_set_playback_time(uint32_t current_time);
+static void app_start_updating_date_time(void);
 
 /* Event handler functions */
 static void app_audio_event_handler(lv_event_t* e);
@@ -134,24 +84,14 @@ static void app_refresh_date_time_timer_cb(lv_timer_t* timer);
 static void app_playback_progress_update_timer_cb(lv_timer_t* timer);
 static void app_volume_bar_countdown_timer_cb(lv_timer_t* timer);
 
-/* Progress bar functions */
 static void progress_smooth_anim_cb(void* obj, int32_t value);
 static void start_smooth_progress_animation(int32_t target_value);
-static void set_progress_smooth_update(bool enabled);
 static void reset_progress_bar_state(void);
-static void test_progress_bar_functionality(void);
 
-/**********************
- *  STATIC VARIABLES
- **********************/
-
-// clang-format off
-struct resource_s   R;  /**< Resources */
-struct ctx_s        C;  /**< Context */
-struct conf_s       CF; /**< Configuration */
-// clang-format on
-
-// 全局进度条状态
+// Variables
+struct resource_s   R;
+struct ctx_s        C;
+struct conf_s       CF;
 static progress_bar_state_t progress_state = {
     .is_seeking = false,
     .was_playing = false,
@@ -162,10 +102,7 @@ static progress_bar_state_t progress_state = {
     .current_value = 0
 };
 
-/* Week days mapping - 完整格式显示星期 */
 const char* WEEK_DAYS[] = { "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" };
-
-/* Transition properties for the objects */
 const lv_style_prop_t transition_props[] = {
     LV_STYLE_OPA,
     LV_STYLE_BG_OPA,
@@ -195,10 +132,7 @@ void app_create(void)
     // 初始化字体系统
     font_system_init();
     
-    printf("STM32H750 Professional Music Player - 专业嵌入式音乐播放器启动中...\n");
-    printf("🏗️ 硬件平台: STM32H750B-DK (480MHz, 1MB RAM, 4.3寸LCD)\n");
-    printf("🎯 采用专业级架构 + STM32H750硬件优化方案\n");
-    printf("📊 性能目标: ≤8MB内存, ≤40%%CPU, ≤50ms延迟, ≤2s启动\n");
+    printf("专业嵌入式音乐播放器启动中...\n");
 
     read_configs();
 
@@ -223,26 +157,9 @@ void app_create(void)
     app_refresh_playlist();
     app_refresh_volume_bar();
     
-    // STM32H750 SD卡挂载
-    const char* mount_point = "/data";
-    printf("💾 文件系统就绪: %s\n", mount_point);
+    printf("Music Player 初始化完成\n");
     
-    // 音频系统初始化
-    LV_LOG_USER("🎵 音频系统初始化完成");
-    
-    printf("✅ Vela Music Player 初始化完成\n");
-    printf("🎮 功能特性：\n");
-    printf("   • 现代化 UI 设计\n");
-    printf("   • 触摸友好界面\n");
-    printf("   • 进度条拖拽控制\n");
-    printf("   • 播放列表管理\n");
-    
-    // 系统就绪
-    LV_LOG_USER("🚀 音乐播放器系统就绪");
-    
-    #ifdef DEBUG
-    LV_LOG_USER("🔧 开发模式：将在启动后测试进度条功能");
-    #endif
+    // 初始化完成
 }
 
 /**********************
@@ -300,7 +217,7 @@ static void app_set_playback_time(uint32_t current_time)
 
     // 如果音频控制器存在，执行seek操作
     if (C.audioctl) {
-        audio_ctl_seek(C.audioctl, C.current_time / 1000);
+        audio_ctl_seek(C.audioctl, C.current_time);  // 传递毫秒
     }
     
     // 更新进度条状态
@@ -355,7 +272,7 @@ static void app_refresh_date_time(void)
     lv_snprintf(date_str, sizeof(date_str), "%s", WEEK_DAYS[wday]);
     lv_label_set_text(R.ui.date, date_str);
 
-    LV_LOG_USER("Time updated: %s %s (real-time)", time_str, date_str);
+    // 时间更新完成 - 静默模式
 }
 
 static void app_refresh_volume_bar(void)
@@ -403,9 +320,7 @@ static void app_refresh_album_info(void)
         set_label_utf8_text(R.ui.album_name, display_name, get_font_by_size(28));
         set_label_utf8_text(R.ui.album_artist, display_artist, get_font_by_size(22));
         
-        LV_LOG_USER("🎵 专辑信息已更新: %s - %s", 
-                   C.current_album->name ? C.current_album->name : "未知歌曲",
-                   C.current_album->artist ? C.current_album->artist : "未知艺术家");
+        // 专辑信息已更新
     }
 }
 
@@ -440,7 +355,7 @@ static void app_refresh_play_status(void)
             // 音频文件路径处理
             const char* audio_path = C.current_album->path;
             
-            LV_LOG_USER("🎵 使用音频文件路径: %s", audio_path);
+            // 使用音频文件路径
             
             // 验证文件是否存在
             if (access(audio_path, R_OK) != 0) {
@@ -463,10 +378,10 @@ static void app_refresh_play_status(void)
                 
                 audio_path = NULL; // 重置路径
                 for (int i = 0; i < 4; i++) {
-                    LV_LOG_USER("🔍 尝试备用路径 %d: %s", i+1, backup_paths[i]);
+                    // 尝试备用路径
                     if (access(backup_paths[i], R_OK) == 0) {
                         audio_path = backup_paths[i];
-                        LV_LOG_USER("✅ 找到可用路径: %s", audio_path);
+                        // 找到可用路径
                         break;
                     }
                 }
@@ -478,7 +393,7 @@ static void app_refresh_play_status(void)
                 }
             }
             
-            LV_LOG_USER("🎵 初始化音频控制器: %s", audio_path);
+            // 初始化音频控制器
             
             // 音频控制器初始化
             int retry_count = 3;
@@ -499,7 +414,7 @@ static void app_refresh_play_status(void)
                 return;
             }
             
-            LV_LOG_USER("🔊 启动音频播放...");
+            // 启动音频播放
             int ret = audio_ctl_start(C.audioctl);
             if (ret < 0) {
                 LV_LOG_ERROR("❌ 音频播放启动失败: %d", ret);
@@ -509,7 +424,7 @@ static void app_refresh_play_status(void)
                 return;
             }
             
-            LV_LOG_USER("✅ 音频播放启动成功");
+            // 音频播放启动成功
         }
         break;
     case PLAY_STATUS_PAUSE:
@@ -620,7 +535,7 @@ static void app_playback_progress_update_timer_cb(lv_timer_t* timer)
         uint64_t new_time = position * 1000;
         
         // 检查时间是否有显著变化，避免不必要的UI更新
-        if (abs((int64_t)new_time - (int64_t)C.current_time) > 500) { // 500ms阈值
+        if (abs((int64_t)new_time - (int64_t)C.current_time) > 100) { // 减少阈值到100ms
             C.current_time = new_time;
             app_refresh_playback_progress();
         }
@@ -628,10 +543,7 @@ static void app_playback_progress_update_timer_cb(lv_timer_t* timer)
         // 每10秒输出一次调试信息
         static int debug_counter = 0;
         if (++debug_counter >= 10) {
-            LV_LOG_USER("🎵 播放进度: %d秒 / %lu秒 (平滑更新:%s)", 
-                       position, 
-                       (unsigned long)(C.current_album ? C.current_album->total_time / 1000 : 0),
-                       progress_state.smooth_update_enabled ? "开启" : "关闭");
+            // 播放进度更新
             debug_counter = 0;
         }
     } else {
@@ -696,18 +608,18 @@ static void app_playlist_event_handler(lv_event_t* e)
         return;
     }
     
-    LV_LOG_USER("📋 播放列表按钮被点击!");
+    // 播放列表按钮被点击
     
-    // 🔍 增强的播放列表数据检查
+    // 检查播放列表数据
     if (!R.albums || R.album_count == 0) {
         LV_LOG_WARN("播放列表为空或未初始化，无法显示");
         
-        // 🚨 用户友好的错误提示
+        // 错误提示
         if (R.ui.album_name) {
             lv_label_set_text(R.ui.album_name, "No music files found");
         }
         
-        // 📱 创建临时提示对话框
+        // 创建提示对话框
         lv_obj_t* mbox = lv_msgbox_create(lv_screen_active());
         lv_msgbox_add_title(mbox, "📂 Empty Playlist");
         lv_msgbox_add_text(mbox, "No music files found.\nPlease add music files to continue.");
@@ -733,16 +645,16 @@ static void app_playlist_event_handler(lv_event_t* e)
         }
         
         if (parent_container) {
-            // 💾 放宽内存检查 - 允许更大的内存使用
+            // 内存检查
             lv_mem_monitor_t mem_info;
             lv_mem_monitor(&mem_info);
-            LV_LOG_USER("📊 当前可用内存: %zu KB", mem_info.free_size / 1024);
+            // 内存状态检查
             
             // 即使内存较低也尝试创建，让播放列表内部处理
             playlist_manager_create(parent_container);
             
             lv_mem_monitor(&mem_info);
-            LV_LOG_USER("✅ 播放列表创建完成 (剩余内存: %zu KB)", mem_info.free_size / 1024);
+            // 播放列表创建完成
         } else {
             LV_LOG_ERROR("❌ 无法找到合适的父容器");
         }
@@ -808,13 +720,13 @@ static void app_audio_event_handler(lv_event_t* e)
         return;  // 只处理点击事件
     }
     
-    LV_LOG_USER("🔊 音量按钮被点击!");
+    // 音量按钮被点击
 
-    // 🔍 增强的音量条状态检查
+    // 音量条状态检查
     if (!R.ui.volume_bar) {
         LV_LOG_ERROR("音量条组件未初始化");
         
-        // 🚨 尝试重新初始化音量条
+        // 尝试重新初始化音量条
         if (R.ui.audio) {
             LV_LOG_WARN("尝试重新初始化音量控件...");
             // 这里可以添加重新初始化音量条的逻辑
@@ -835,7 +747,7 @@ static void app_audio_event_handler(lv_event_t* e)
             lv_timer_pause(C.timers.volume_bar_countdown);
         }
     } else {
-        LV_LOG_USER("🔊 显示音量条 (当前音量: %d)", C.volume);
+        // 显示音量条
         lv_obj_set_state(R.ui.volume_bar, LV_STATE_DEFAULT, false);
         lv_obj_set_state(R.ui.volume_bar, LV_STATE_USER_1, true);
         app_refresh_volume_countdown_timer();
@@ -850,14 +762,12 @@ static void app_audio_event_handler(lv_event_t* e)
         }
     }
     
-    // 💾 内存状态检查
+    // 内存状态检查
+    // 内存监控 - 静默模式
     lv_mem_monitor_t mem_info;
     lv_mem_monitor(&mem_info);
-    if (mem_info.free_size < 10 * 1024) {  // 少于10KB时警告
-        LV_LOG_WARN("内存低警告: %zu KB 可用", mem_info.free_size / 1024);
-    }
     
-    LV_LOG_USER("✅ 音量控制事件处理完成 (内存: %zu KB)", mem_info.free_size / 1024);
+    // 音量控制事件处理完成
 }
 
 // 注意：app_playlist_btn_event_handler已移除，因为现在使用playlist_manager.c中的新事件处理系统
@@ -866,15 +776,14 @@ static void app_switch_album_event_handler(lv_event_t* e)
 {
     // 切歌事件处理
     if (!e) {
-        printf("❌ 事件指针为空，切歌事件处理失败\n");
+        // 事件指针为空
         return;
     }
     
     lv_event_code_t code = lv_event_get_code(e);
     lv_obj_t* target = lv_event_get_target(e);
-    bool is_long_press = (code == LV_EVENT_LONG_PRESSED_REPEAT);
     
-    // 🎨 处理按压和释放的视觉反馈
+    // 处理按压和释放的视觉反馈
     if (code == LV_EVENT_PRESSED && target) {
         // 按下时的视觉反馈
         lv_obj_set_style_transform_scale(target, 245, LV_PART_MAIN);  // 轻微缩小
@@ -912,20 +821,16 @@ static void app_switch_album_event_handler(lv_event_t* e)
         return;
     }
     
-    const char* direction_str = (direction == SWITCH_ALBUM_MODE_PREV) ? "⏮️ 上一首" : "⏭️ 下一首";
-    const char* press_type = is_long_press ? "🔄 长按快速切换" : "🎵 点击切换";
-    
-    printf("%s 歌曲按钮! 方向: %s, 当前: %s\n", press_type, direction_str,
-           C.current_album->name ? C.current_album->name : "未知");
+    // 歌曲切换操作
     
     int32_t album_index = app_get_album_index(C.current_album);
     if (album_index < 0) {
-        printf("❌ 错误: 无法获取当前歌曲索引，重置到第一首\n");
+        // 无法获取当前歌曲索引，重置到第一首
         app_switch_to_album(0);
         return;
     }
 
-    // 🎮 计算新索引 - 增强边界检查
+    // 计算新索引
     int32_t new_index = album_index;
     switch (direction) {
     case SWITCH_ALBUM_MODE_PREV:
@@ -942,13 +847,11 @@ static void app_switch_album_event_handler(lv_event_t* e)
         return;
     }
 
-    LV_LOG_USER("🎯 切换歌曲: %ld -> %ld (总数: %d)", (long)album_index, (long)new_index, R.album_count);
+    // 切换歌曲
 
     // 🚀 执行切换
     app_switch_to_album(new_index);
-    LV_LOG_USER("✅ 歌曲切换成功: %s -> %s", 
-                C.current_album->name ? C.current_album->name : "未知",
-                R.albums[new_index].name ? R.albums[new_index].name : "未知");
+    // 歌曲切换成功
 }
 
 static void app_play_status_event_handler(lv_event_t* e)
@@ -967,7 +870,7 @@ static void app_play_status_event_handler(lv_event_t* e)
         return;
     }
     
-    // 🎨 处理按压和释放的视觉反馈
+    // 处理按压和释放的视觉反馈
     if (code == LV_EVENT_PRESSED) {
         // 按下时的视觉反馈
         lv_obj_add_state(target, LV_STATE_PRESSED);
@@ -995,36 +898,31 @@ static void app_play_status_event_handler(lv_event_t* e)
         return;
     }
     
-    LV_LOG_USER("🎵 播放按钮点击: 当前状态=%d, 专辑=%s", C.play_status, 
-                C.current_album->name ? C.current_album->name : "未知");
+    // 播放按钮点击处理
 
-    // 🎮 专业状态机处理 - 增强状态验证
+    // 状态机处理
     play_status_t new_status;
-    const char* action_desc;
     
     switch (C.play_status) {
     case PLAY_STATUS_STOP:
         new_status = PLAY_STATUS_PLAY;
-        action_desc = "▶️ 开始播放";
         break;
     case PLAY_STATUS_PLAY:
         new_status = PLAY_STATUS_PAUSE;
-        action_desc = "⏸️ 暂停播放";
         break;
     case PLAY_STATUS_PAUSE:
         new_status = PLAY_STATUS_PLAY;
-        action_desc = "▶️ 恢复播放";
         break;
     default:
         LV_LOG_ERROR("未知播放状态: %d，操作被拒绝", C.play_status);
         return;
     }
     
-    LV_LOG_USER("%s (状态: %d -> %d)", action_desc, C.play_status, new_status);
+    // 状态切换
     
     // 🚀 执行状态切换
     app_set_play_status(new_status);
-    LV_LOG_USER("✅ 播放状态切换完成");
+    // 播放状态切换完成
 }
 
 // 平滑动画回调函数
@@ -1064,16 +962,6 @@ static void start_smooth_progress_animation(int32_t target_value)
     lv_anim_start(&progress_state.smooth_anim);
 }
 
-// 设置进度条平滑更新开关
-static void set_progress_smooth_update(bool enabled)
-{
-    progress_state.smooth_update_enabled = enabled;
-    if (!enabled) {
-        // 停止当前动画
-        lv_anim_delete(R.ui.playback_progress, progress_smooth_anim_cb);
-    }
-    LV_LOG_USER("进度条平滑更新: %s", enabled ? "开启" : "关闭");
-}
 
 // 重置进度条状态
 static void reset_progress_bar_state(void)
@@ -1093,54 +981,6 @@ static void reset_progress_bar_state(void)
     LV_LOG_USER("进度条状态已重置");
 }
 
-// 进度条功能测试函数
-static void test_progress_bar_functionality(void)
-{
-    LV_LOG_USER("🧪 开始进度条功能测试...");
-    
-    if (!R.ui.playback_progress) {
-        LV_LOG_ERROR("❌ 进度条UI组件未初始化");
-        return;
-    }
-    
-    if (!C.current_album) {
-        LV_LOG_WARN("⚠️ 当前无专辑，无法测试seek功能");
-        return;
-    }
-    
-    // 测试1: 平滑更新开关
-    LV_LOG_USER("🔧 测试1: 平滑更新开关");
-    set_progress_smooth_update(false);
-    set_progress_smooth_update(true);
-    
-    // 测试2: 状态重置
-    LV_LOG_USER("🔧 测试2: 状态重置功能");
-    reset_progress_bar_state();
-    
-    // 测试3: 平滑动画（如果有音乐在播放）
-    if (C.current_album->total_time > 30000) { // 大于30秒的音乐
-        LV_LOG_USER("🔧 测试3: 平滑动画效果");
-        start_smooth_progress_animation(15000); // 跳转到15秒位置
-        
-        // 延迟测试：2秒后再测试另一个位置
-        // 注意：这里只是演示，实际应用中可以创建定时器来延迟执行
-        LV_LOG_USER("🎯 模拟测试：平滑动画到不同位置");
-    }
-    
-    // 测试4: 边界检查
-    LV_LOG_USER("🔧 测试4: 边界检查");
-    if (C.current_album->total_time > 0) {
-        start_smooth_progress_animation(0); // 开始位置
-        start_smooth_progress_animation((int32_t)C.current_album->total_time); // 结束位置
-    }
-    
-    LV_LOG_USER("✅ 进度条功能测试完成");
-    LV_LOG_USER("📊 测试结果统计:");
-    LV_LOG_USER("   - 平滑更新: %s", progress_state.smooth_update_enabled ? "✅" : "❌");
-    LV_LOG_USER("   - 拖拽状态: %s", progress_state.is_seeking ? "进行中" : "空闲");
-    LV_LOG_USER("   - 当前值: %ld", (long)progress_state.current_value);
-    LV_LOG_USER("   - 目标值: %ld", (long)progress_state.target_value);
-}
 
 
 static void app_playback_progress_bar_event_handler(lv_event_t* e)
@@ -1173,23 +1013,25 @@ static void app_playback_progress_bar_event_handler(lv_event_t* e)
             lv_timer_pause(C.timers.playback_progress_update);
         }
         
-        // 视觉反馈
-        lv_obj_set_height(R.ui.playback_progress, 10);
-        lv_obj_set_style_bg_color(R.ui.playback_progress, lv_color_hex(0x00BFFF), LV_PART_INDICATOR);
-        lv_obj_set_style_shadow_width(R.ui.playback_progress, 8, LV_PART_INDICATOR);
-        lv_obj_set_style_shadow_color(R.ui.playback_progress, lv_color_hex(0x00BFFF), LV_PART_INDICATOR);
-        lv_obj_set_style_shadow_opa(R.ui.playback_progress, LV_OPA_50, LV_PART_INDICATOR);
+        // 拖拽状态视觉反馈 - 蓝色高亮和流畅动画
+        lv_obj_set_height(R.ui.playback_progress, 14);  // 更明显的高度变化
+        lv_obj_set_style_bg_color(R.ui.playback_progress, lv_color_hex(0x0078D4), LV_PART_INDICATOR);  // 微软蓝
+        lv_obj_set_style_shadow_width(R.ui.playback_progress, 12, LV_PART_INDICATOR);
+        lv_obj_set_style_shadow_color(R.ui.playback_progress, lv_color_hex(0x0078D4), LV_PART_INDICATOR);
+        lv_obj_set_style_shadow_opa(R.ui.playback_progress, LV_OPA_70, LV_PART_INDICATOR);
+        lv_obj_set_style_radius(R.ui.playback_progress, 7, LV_PART_INDICATOR);
+        lv_obj_set_style_transform_zoom(R.ui.playback_progress, 256 + 20, LV_PART_INDICATOR);  // 轻微放大效果
         
         // 拖拽反馈
-        LV_LOG_USER("🎚️ 开始拖拽进度条 - 增强交互模式");
+        // 开始拖拽模式
         break;
     }
     case LV_EVENT_PRESSING: {
         // 拖拽中实时预览更新
         if (!progress_state.is_seeking) break;
         
-        // 节流：限制更新频率
-        if (current_tick - progress_state.last_update_tick < 16) {
+        // 优化响应性：减少节流延迟
+        if (current_tick - progress_state.last_update_tick < 8) {  // 更快的响应
             break;
         }
         progress_state.last_update_tick = current_tick;
@@ -1205,10 +1047,10 @@ static void app_playback_progress_bar_event_handler(lv_event_t* e)
         int32_t bar_width = lv_area_get_width(&area);
         int32_t relative_x = point.x - area.x1;
         
-        // 边界检查
-        const int32_t tolerance = 20;
-        if (relative_x < -tolerance) relative_x = 0;
-        else if (relative_x > bar_width + tolerance) relative_x = bar_width;
+        // 简化边界检查和扩展触摸区域
+        const int32_t touch_tolerance = 30;  // 扩大触摸容差
+        if (relative_x < -touch_tolerance) relative_x = 0;
+        else if (relative_x > bar_width + touch_tolerance) relative_x = bar_width;
         else if (relative_x < 0) relative_x = 0;
         else if (relative_x > bar_width) relative_x = bar_width;
         
@@ -1221,6 +1063,8 @@ static void app_playback_progress_bar_event_handler(lv_event_t* e)
         
         progress_state.seek_preview_time = new_time;
         
+        // 拖拽位置计算完成
+        
         // 更新UI显示
         progress_state.current_value = (int32_t)new_time;
         lv_bar_set_value(R.ui.playback_progress, (int32_t)new_time, LV_ANIM_OFF);
@@ -1232,41 +1076,51 @@ static void app_playback_progress_bar_event_handler(lv_event_t* e)
         lv_snprintf(buff, sizeof(buff), "%02d:%02d", preview_min, preview_sec);
         lv_span_set_text(R.ui.playback_current_time, buff);
         
-        // 预览反馈
-        static uint32_t last_log_tick = 0;
-        if (current_tick - last_log_tick > 500) {
-            LV_LOG_USER("🎵 预览位置: %02lu:%02lu", (unsigned long)preview_min, (unsigned long)preview_sec);
-            last_log_tick = current_tick;
-        }
+        // 预览反馈 - 静默模式
         
         break;
     }
     case LV_EVENT_RELEASED: {
-        // 🎯 释放时执行实际seek操作 - 增强错误处理
+        // 释放时执行seek操作
         if (!progress_state.is_seeking) break;
         
         progress_state.is_seeking = false;
         
-        // 平滑恢复进度条正常样式
-        lv_obj_set_height(R.ui.playback_progress, 6);
-        lv_obj_set_style_bg_color(R.ui.playback_progress, lv_color_hex(0xFF6B6B), LV_PART_INDICATOR);
+        // 恢复进度条正常样式 - 流畅过渡
+        lv_obj_set_height(R.ui.playback_progress, 8);
+        lv_obj_set_style_bg_color(R.ui.playback_progress, lv_color_hex(0xFF4757), LV_PART_INDICATOR);
         lv_obj_set_style_shadow_width(R.ui.playback_progress, 0, LV_PART_INDICATOR);
+        lv_obj_set_style_radius(R.ui.playback_progress, 4, LV_PART_INDICATOR);
+        lv_obj_set_style_transform_zoom(R.ui.playback_progress, 256, LV_PART_INDICATOR);  // 恢复正常大小
         
-        // 执行实际的seek操作 - 增强错误处理
+        // 执行seek操作
         uint64_t seek_time = progress_state.seek_preview_time;
+        
+        // 安全边界检查
+        if (seek_time > C.current_album->total_time) {
+            seek_time = C.current_album->total_time;
+        }
+        
         if (C.audioctl && seek_time <= C.current_album->total_time) {
-            int seek_result = audio_ctl_seek(C.audioctl, seek_time / 1000);
+            // 执行seek，传递毫秒
+            int seek_result = audio_ctl_seek(C.audioctl, seek_time);
+            
             if (seek_result == 0) {
+                // Seek成功，更新当前时间
                 C.current_time = seek_time;
-                LV_LOG_USER("🎵 成功Seek到位置: %02d:%02d", 
-                           (int)(seek_time / 60000), (int)((seek_time % 60000) / 1000));
+                progress_state.current_value = (int32_t)seek_time;
+                progress_state.target_value = (int32_t)seek_time;
+                
+                // 强制刷新进度显示
+                app_refresh_playback_progress();
             } else {
-                LV_LOG_ERROR("❌ Seek操作失败: %d", seek_result);
-                // 如果seek失败，恢复原来的时间显示
+                // Seek失败，恢复到原来的状态
+                C.current_time = progress_state.current_value;
                 app_refresh_playback_progress();
             }
         } else {
-            LV_LOG_WARN("⚠️ 无效的seek位置或音频控制器");
+            // 音频控制器无效或时间超出范围，恢复状态
+            app_refresh_playback_progress();
         }
         
         // 智能恢复播放状态
@@ -1286,11 +1140,11 @@ static void app_playback_progress_bar_event_handler(lv_event_t* e)
         }
         progress_state.smooth_update_enabled = true;
         
-        LV_LOG_USER("✅ 完成进度条拖拽操作");
+        // 拖拽操作完成
         break;
     }
     case LV_EVENT_CLICKED: {
-        // 🎯 单击快速跳转 - 仅在非拖拽状态下
+        // 单击快速跳转
         if (progress_state.is_seeking) break;
         
         lv_point_t point;
@@ -1314,14 +1168,29 @@ static void app_playback_progress_bar_event_handler(lv_event_t* e)
         
         if (new_time > total_time) new_time = total_time;
         
-        LV_LOG_USER("🎵 进度条点击跳转: %02d:%02d", 
-                   (int)(new_time / 60000), (int)((new_time % 60000) / 1000));
+        // 点击跳转操作
         
-        // 使用平滑动画跳转
-        start_smooth_progress_animation((int32_t)new_time);
+        // 立即更新进度条值以提供即时反馈
+        lv_bar_set_value(R.ui.playback_progress, (int32_t)new_time, LV_ANIM_ON);
         
-        // 执行跳转
-        app_set_playback_time(new_time);
+        // 执行实际的跳转
+        if (C.audioctl) {
+            int seek_result = audio_ctl_seek(C.audioctl, new_time);
+            
+            if (seek_result == 0) {
+                C.current_time = new_time;
+                
+                // 更新时间显示
+                char buff[16];
+                uint32_t current_min = new_time / 60000;
+                uint32_t current_sec = (new_time % 60000) / 1000;
+                lv_snprintf(buff, sizeof(buff), "%02d:%02d", current_min, current_sec);
+                lv_span_set_text(R.ui.playback_current_time, buff);
+            } else {
+                // Seek失败，恢复原来的进度
+                app_refresh_playback_progress();
+            }
+        }
         break;
     }
     case LV_EVENT_PRESS_LOST: {
@@ -1329,10 +1198,12 @@ static void app_playback_progress_bar_event_handler(lv_event_t* e)
         if (progress_state.is_seeking) {
             progress_state.is_seeking = false;
             
-            // 恢复样式
-            lv_obj_set_height(R.ui.playback_progress, 6);
-            lv_obj_set_style_bg_color(R.ui.playback_progress, lv_color_hex(0xFF6B6B), LV_PART_INDICATOR);
+            // 恢复正常样式
+            lv_obj_set_height(R.ui.playback_progress, 8);
+            lv_obj_set_style_bg_color(R.ui.playback_progress, lv_color_hex(0xFF4757), LV_PART_INDICATOR);
             lv_obj_set_style_shadow_width(R.ui.playback_progress, 0, LV_PART_INDICATOR);
+            lv_obj_set_style_radius(R.ui.playback_progress, 4, LV_PART_INDICATOR);
+            lv_obj_set_style_transform_zoom(R.ui.playback_progress, 256, LV_PART_INDICATOR);  // 恢复正常大小
             
             // 恢复定时器
             if (C.timers.playback_progress_update) {
@@ -1342,18 +1213,35 @@ static void app_playback_progress_bar_event_handler(lv_event_t* e)
             // 恢复正确的进度显示
             app_refresh_playback_progress();
             
-            LV_LOG_WARN("⚠️ 进度条拖拽意外中断，已安全恢复");
+            // 拖拽意外中断，已恢复
         }
         break;
     }
     case LV_EVENT_LONG_PRESSED: {
-        // 🎛️ 长按进入精确调节模式
-        LV_LOG_USER("🔧 进入进度条精确调节模式");
+        // 长按进入精确调节模式
+        if (!progress_state.is_seeking) {
+            // 开始精确调节模式
+            progress_state.is_seeking = true;
+            progress_state.was_playing = (C.play_status == PLAY_STATUS_PLAY);
+            progress_state.last_update_tick = current_tick;
+            
+            // 停止定时器和动画
+            lv_anim_delete(R.ui.playback_progress, progress_smooth_anim_cb);
+            if (C.timers.playback_progress_update) {
+                lv_timer_pause(C.timers.playback_progress_update);
+            }
+        }
         
-        // 更强烈的视觉反馈
-        lv_obj_set_height(R.ui.playback_progress, 12);
-        lv_obj_set_style_bg_color(R.ui.playback_progress, lv_color_hex(0x00FF7F), LV_PART_INDICATOR);
+        // 精确调节模式视觉反馈 - 绿色高亮
+        lv_obj_set_height(R.ui.playback_progress, 16);  // 最大高度
+        lv_obj_set_style_bg_color(R.ui.playback_progress, lv_color_hex(0x00C851), LV_PART_INDICATOR);  // 绿色
+        lv_obj_set_style_shadow_width(R.ui.playback_progress, 8, LV_PART_INDICATOR);
+        lv_obj_set_style_shadow_color(R.ui.playback_progress, lv_color_hex(0x00C851), LV_PART_INDICATOR);
+        lv_obj_set_style_shadow_opa(R.ui.playback_progress, LV_OPA_80, LV_PART_INDICATOR);
+        lv_obj_set_style_radius(R.ui.playback_progress, 8, LV_PART_INDICATOR);
+        lv_obj_set_style_transform_zoom(R.ui.playback_progress, 256 + 30, LV_PART_INDICATOR);  // 更明显的放大
         
+        // 精确调节模式激活
         break;
     }
     default:
@@ -1556,7 +1444,7 @@ static void app_create_main_page(void)
         lv_obj_set_style_bg_grad_dir(root, LV_GRAD_DIR_VER, LV_PART_MAIN);
     lv_obj_set_style_bg_opa(root, LV_OPA_COVER, LV_PART_MAIN);
     
-    printf("🎨 专业级深色背景已应用 - 无背景图片依赖\n");
+    // 深色背景已应用
     lv_obj_set_style_border_width(root, 0, LV_PART_MAIN);
     lv_obj_set_flex_flow(root, LV_FLEX_FLOW_COLUMN);
     lv_obj_set_flex_align(root, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
@@ -1859,8 +1747,7 @@ static void app_create_main_page(void)
     app_create_top_layer();
 
     // 🎯 专业级按钮交互已通过配置系统应用
-    printf("🎯 专业级UI交互优化已应用 - 增强触摸响应和视觉反馈\n");
-    printf("🔧 按钮配置: 扩展点击区域、优化长按时间、增强视觉反馈\n");
+    // UI交互优化已应用
 
     // 🎯 专业级事件绑定 - 支持多种交互模式和增强反馈
     lv_obj_add_event_cb(playlist_btn, app_playlist_event_handler, LV_EVENT_CLICKED, NULL);
@@ -1889,21 +1776,18 @@ static void app_create_main_page(void)
     
     // 🎛️ 进度条增强交互 - 支持点击跳转和拖拽
     lv_obj_add_event_cb(progress_bar, app_playback_progress_bar_event_handler, LV_EVENT_ALL, NULL);
-    lv_obj_set_ext_click_area(progress_bar, 8);  // 扩展进度条点击区域
+    lv_obj_set_ext_click_area(progress_bar, 15);  // 扩大进度条触摸区域以改善拖拽体验
     
     // 🔊 音量条增强交互
     lv_obj_set_ext_click_area(R.ui.volume_bar, 10);  // 扩展音量条点击区域
     
     // 🎨 按钮长按延迟已通过专业级配置系统设置
-    printf("🎮 专业级事件绑定完成 - 支持点击/长按/拖拽多种交互模式\n");
+    // 事件绑定完成
 
     // 启动时间更新定时器
     app_start_updating_date_time();
     
-    // 开发模式：可以在这里添加测试代码
-    #ifdef DEBUG
-    LV_LOG_USER("🔧 进度条功能已就绪，可进行测试");
-    #endif
+    // UI创建完成
 }
 
 // 时间更新功能
@@ -2003,14 +1887,10 @@ static void reload_music_config(void)
         R.albums = NULL;
     }
     
-    int old_album_count = R.album_count;
     R.album_count = 0;
     
     // 💾 内存统计
-    lv_mem_monitor_t mem_info_cleanup;
-    lv_mem_monitor(&mem_info_cleanup);
-    LV_LOG_USER("🧹 音乐配置内存清理完成 (释放了%d个专辑, 可用内存: %zu KB)", 
-                old_album_count, mem_info_cleanup.free_size / 1024);
+    // 内存清理完成 - 静默模式
 
     /* Load music config - 增强版内存安全 */
     uint32_t file_size;
@@ -2043,7 +1923,7 @@ static void reload_music_config(void)
     
     buff = lv_malloc(file_size + 1);  // +1 for null terminator
     if (!buff) {
-        LV_LOG_ERROR("内存分配失败: %lu bytes", (unsigned long)file_size);
+        // 内存分配失败 - 静默处理
         lv_fs_close(&file);
         return;
     }
@@ -2082,7 +1962,7 @@ static void reload_music_config(void)
     
     R.albums = lv_malloc_zeroed(R.album_count * sizeof(album_info_t));
     if (!R.albums) {
-        printf("❌ 专辑内存分配失败!\n");
+        // 专辑内存分配失败
         lv_free(buff);
         return;
     }
@@ -2090,7 +1970,7 @@ static void reload_music_config(void)
     for (int i = 0; i < R.album_count; i++) {
         cJSON* music_object = cJSON_GetArrayItem(musics_object, i);
         if (!music_object) {
-            printf("❌ 专辑 %d JSON对象无效\n", i);
+            // 专辑JSON对象无效
             continue;
         }
 
@@ -2103,7 +1983,7 @@ static void reload_music_config(void)
 
         // 安全检查
         if (!path || !name) {
-            printf("❌ 专辑 %d 缺少必要信息 (path: %p, name: %p)\n", i, path, name);
+            // 专辑缺少必要信息
             continue;
         }
 
@@ -2149,11 +2029,7 @@ cleanup_success:
         buff = NULL;
     }
     
-    // 💾 内存状态报告
-    lv_mem_monitor_t final_mem_info;
-    lv_mem_monitor(&final_mem_info);
-    LV_LOG_USER("🎵 音乐配置加载完成 (专辑数: %d, 可用内存: %zu KB)", 
-                R.album_count, final_mem_info.free_size / 1024);
+    // 音乐配置加载完成
 }
 
 /**********************
