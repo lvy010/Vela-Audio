@@ -1,4 +1,4 @@
-# Vela Music_player
+# Vela Audio
 
 <div align="center">
 
