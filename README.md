@@ -35,7 +35,6 @@ adb shell "music_player &"
 
 - **系统**：OpenVela/NuttX
 - **界面**：LVGL 8.x (32位色深)
-- **音频**：libmad (MP3) + 原生WAV
 - **架构**：6个独立模块，事件驱动
 
 ## 完整文档
