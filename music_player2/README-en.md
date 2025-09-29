@@ -10,10 +10,15 @@ Vela Audio is an embedded music player designed based on the openvela system. It
 - [Getting Started](#getting-started)
 - [User Guide](#user-guide)
 - [Customization Guide](#customization-guide)
-- [Troubleshooting](docs/en/TROUBLESHOOTING.md)
-- [Technical Documentation](docs/en/TECHNICAL.md)
 - [Contributing](#contributing)
-- [Changelog](docs/en/CHANGELOG.md)
+
+## 📚 Detailed Documentation
+
+| Document Type | 中文文档 | English Documentation |
+|---------------|----------|----------------------|
+| 🔧 Troubleshooting | [故障排除指南](docs/ch/TROUBLESHOOTING.md) | [Troubleshooting Guide](docs/en/TROUBLESHOOTING.md) |
+| 🏗️ Technical Architecture | [技术文档](docs/ch/TECHNICAL.md) | [Technical Documentation](docs/en/TECHNICAL.md) |
+| 📋 Version History | [更新日志](docs/ch/CHANGELOG.md) | [Changelog](docs/en/CHANGELOG.md) |
 
 ## Features
 

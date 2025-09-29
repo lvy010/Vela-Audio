@@ -10,10 +10,15 @@ Vela Audio是一个嵌入式音乐播放器，基于 openvela 系统设计。提
 - [启动指南](#启动指南)
 - [使用指南](#使用指南)
 - [自定义指南](#自定义指南)
-- [故障排除](TROUBLESHOOTING.md)
-- [技术文档](TECHNICAL.md)
 - [贡献指南](#贡献指南)
-- [更新日志](CHANGELOG.md)
+
+## 📚 详细文档
+
+| 文档类型 | 中文文档 | English Documentation |
+|----------|----------|----------------------|
+| 🔧 故障排除 | [故障排除指南](docs/ch/TROUBLESHOOTING.md) | [Troubleshooting Guide](docs/en/TROUBLESHOOTING.md) |
+| 🏗️ 技术架构 | [技术文档](docs/ch/TECHNICAL.md) | [Technical Documentation](docs/en/TECHNICAL.md) |
+| 📋 版本历史 | [更新日志](docs/ch/CHANGELOG.md) | [Changelog](docs/en/CHANGELOG.md) |
 
 ## 功能特性
 
