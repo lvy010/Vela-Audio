@@ -19,19 +19,19 @@
 ifeq ($(CONFIG_LVX_USE_DEMO_MUSIC_PLAYER), y)
 PROGNAME = music_player
 PRIORITY = 100
-STACKSIZE = 16384  # 减少栈大小从40KB到16KB
+STACKSIZE = 16384  # Reduce stack size from 40KB to 16KB
 MODULE = $(CONFIG_LVX_USE_DEMO_MUSIC_PLAYER)
 
-# 音乐播放器源文件 - 使用模拟器兼容版本
+# Music player source files - using simulator compatible version
 CSRCS = music_player.c audio_ctl.c wifi.c splash_screen.c playlist_manager.c font_config.c
 
-# 主入口文件
+# Main entry file
 MAINSRC = music_player_main.c
 
-# 模拟器环境配置
+# Simulator environment configuration
 CFLAGS += -DUSING_SIMULATOR_AUDIO=1
 
-# 基础库链接
+# Basic library linking
 LDLIBS += -lm -lpthread
 
 endif

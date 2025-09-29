@@ -1,7 +1,7 @@
 //
-// Vela 音乐播放器 - 极简播放列表管理器头文件
+// Vela Music Player - Minimalist Playlist Manager Header File
 // Created by Vela on 2025/8/20
-// 基于emergency_playlist.c的轻量级播放列表实现
+// Lightweight playlist implementation based on emergency_playlist.c
 //
 
 #ifndef PLAYLIST_MANAGER_H
@@ -15,23 +15,23 @@
  *********************/
 
 /**
- * @brief 创建轻量级播放列表界面 (基于emergency模式)
- * @param parent 父容器
+ * @brief Create lightweight playlist interface (based on emergency mode)
+ * @param parent Parent container
  */
 void playlist_manager_create(lv_obj_t* parent);
 
 /**
- * @brief 刷新播放列表显示
+ * @brief Refresh playlist display
  */
 void playlist_manager_refresh(void);
 
 /**
- * @brief 关闭播放列表
+ * @brief Close playlist
  */
 void playlist_manager_close(void);
 
 /**
- * @brief 播放列表是否打开
+ * @brief Whether playlist is open
  * @return true if open, false if closed
  */
 bool playlist_manager_is_open(void);

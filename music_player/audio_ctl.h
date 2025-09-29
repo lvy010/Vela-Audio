@@ -1,7 +1,7 @@
-//
-// 🎵 基于NXPlayer的音频控制器头文件
-// 使用Vela系统原生音频播放器，支持MP3播放功能
-//
+/**
+ * Audio Controller Header - NXPlayer based
+ * Vela system native audio player with MP3 support
+ */
 
 #ifndef AUDIO_CTL_H
 #define AUDIO_CTL_H
@@ -19,12 +19,12 @@ extern "C" {
  *      DEFINES
  *********************/
 
-// 音频格式定义
+/* Audio format definitions */
 #define AUDIO_FORMAT_UNKNOWN 0
 #define AUDIO_FORMAT_WAV     1
 #define AUDIO_FORMAT_MP3     2
 
-// 播放状态定义
+/* Playback state definitions */
 #define AUDIO_CTL_STATE_STOP  0
 #define AUDIO_CTL_STATE_START 1
 #define AUDIO_CTL_STATE_PAUSE 2
@@ -33,7 +33,7 @@ extern "C" {
  *      TYPEDEFS
  *********************/
 
-// WAV文件信息结构
+/* WAV file information structure */
 typedef struct {
     uint32_t sample_rate;
     uint16_t num_channels;
@@ -42,39 +42,39 @@ typedef struct {
     uint32_t data_offset;
 } wav_s;
 
-// 前向声明 NxPlayer 结构
+/* Forward declaration of NxPlayer structure */
 struct nxplayer_s;
 
-// 音频控制器结构体 - 基于NxPlayer
+/* Audio controller structure - NxPlayer based */
 typedef struct audioctl {
-    // 文件信息
+    // File information
     char file_path[512];
     int audio_format;
     off_t file_size;
     
-    // NxPlayer 实例 - 使用 Vela 系统音频播放器
+    // NxPlayer instance - Vela system audio player
     struct nxplayer_s *nxplayer;
     
-    // 播放状态控制
+    // Playback state control
     volatile int state;
     volatile int is_playing;
     volatile int is_paused;
     volatile int should_stop;
     pthread_mutex_t control_mutex;
     
-    // 播放位置信息
+    // Playback position information
     uint32_t current_position_ms;
     uint32_t total_duration_ms;
     
-    // 监控线程
+    // Monitor thread
     pthread_t monitor_thread;
     int monitor_running;
     
-    // WAV 特有信息（仅WAV格式使用）
+    // WAV specific information (WAV format only)
     wav_s wav;
-    int fd;  // 仅WAV格式使用的文件描述符
+    int fd;  // File descriptor for WAV format only
     
-    // 兼容字段
+    // Compatibility fields
     int seek;
     uint32_t seek_position;
     uint32_t file_position;
@@ -86,74 +86,74 @@ typedef struct audioctl {
  *********************/
 
 /**
- * @brief 检测音频文件格式
- * @param path 音频文件路径
- * @return 音频格式 (AUDIO_FORMAT_*)
+ * Detect audio file format
+ * @param path Audio file path
+ * @return Audio format (AUDIO_FORMAT_*)
  */
 int audio_ctl_detect_format(const char *path);
 
 /**
- * @brief 初始化音频控制器（使用NxPlayer）
- * @param path 音频文件路径
- * @return 成功返回控制器指针，失败返回NULL
+ * Initialize audio controller (using NxPlayer)
+ * @param path Audio file path
+ * @return Controller pointer on success, NULL on failure
  */
 audioctl_s *audio_ctl_init_nxaudio(const char *path);
 
 /**
- * @brief 开始播放音频
- * @param ctl 音频控制器指针
- * @return 0成功，其他值失败
+ * Start audio playback
+ * @param ctl Audio controller pointer
+ * @return 0 on success, other values on failure
  */
 int audio_ctl_start(audioctl_s *ctl);
 
 /**
- * @brief 暂停播放
- * @param ctl 音频控制器指针
- * @return 0成功，其他值失败
+ * Pause playback
+ * @param ctl Audio controller pointer
+ * @return 0 on success, other values on failure
  */
 int audio_ctl_pause(audioctl_s *ctl);
 
 /**
- * @brief 恢复播放
- * @param ctl 音频控制器指针
- * @return 0成功，其他值失败
+ * @brief Resume playback
+ * @param ctl Audio controller pointer
+ * @return 0 on success, other values on failure
  */
 int audio_ctl_resume(audioctl_s *ctl);
 
 /**
- * @brief 停止播放
- * @param ctl 音频控制器指针
- * @return 0成功，其他值失败
+ * @brief Stop playback
+ * @param ctl Audio controller pointer
+ * @return 0 on success, other values on failure
  */
 int audio_ctl_stop(audioctl_s *ctl);
 
 /**
- * @brief 设置音量
- * @param ctl 音频控制器指针
- * @param vol 音量（0-100）
- * @return 0成功，其他值失败
+ * @brief Set volume
+ * @param ctl Audio controller pointer
+ * @param vol Volume (0-100)
+ * @return 0 on success, other values on failure
  */
 int audio_ctl_set_volume(audioctl_s *ctl, uint16_t vol);
 
 /**
- * @brief 获取当前播放位置（秒）
- * @param ctl 音频控制器指针
- * @return 播放位置（秒）
+ * @brief Get current playback position (seconds)
+ * @param ctl Audio controller pointer
+ * @return Playback position (seconds)
  */
 int audio_ctl_get_position(audioctl_s *ctl);
 
 /**
- * @brief 跳转到指定位置
- * @param ctl 音频控制器指针
- * @param ms 目标位置（毫秒）
- * @return 0成功，其他值失败
+ * @brief Seek to specified position
+ * @param ctl Audio controller pointer
+ * @param ms Target position (milliseconds)
+ * @return 0 on success, other values on failure
  */
 int audio_ctl_seek(audioctl_s *ctl, unsigned ms);
 
 /**
- * @brief 释放音频控制器
- * @param ctl 音频控制器指针
- * @return 0成功，其他值失败
+ * @brief Release audio controller
+ * @param ctl Audio controller pointer
+ * @return 0 on success, other values on failure
  */
 int audio_ctl_uninit_nxaudio(audioctl_s *ctl);
 

@@ -37,11 +37,24 @@ adb shell "music_player &"
 - **界面**：LVGL 8.x (32位色深)
 - **架构**：6个独立模块，事件驱动
 
-## 完整文档
+## 完整文档 | Documentation
 
-### [**>> 查看完整技术文档 <<**](music_player/README.md)
+### 语言选择 | Language Selection
+
+**中文文档 | Chinese Documentation**
+- [**>> 查看完整技术文档 <<**](music_player/README.md)
+- [技术架构](music_player/docs/ch/TECHNICAL.md)
+- [故障排除](music_player/docs/ch/TROUBLESHOOTING.md)
+- [更新日志](music_player/docs/ch/CHANGELOG.md)
+
+**English Documentation**
+- [**>> View Complete Technical Documentation <<**](music_player/README-en.md)
+- [Technical Architecture](music_player/docs/en/TECHNICAL.md)
+- [Troubleshooting](music_player/docs/en/TROUBLESHOOTING.md)
+- [Changelog](music_player/docs/en/CHANGELOG.md)
 
 包含详细的配置说明、API参考、架构设计和故障排除指南。
+Contains detailed configuration instructions, API reference, architecture design, and troubleshooting guides.
 
 ## 贡献 & 许可
 

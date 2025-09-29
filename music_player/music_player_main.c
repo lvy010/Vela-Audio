@@ -1,8 +1,7 @@
-//
-// Vela 音乐播放器主入口文件
-// Created by Vela on 2025/7/20
-// 应用程序启动和LVGL初始化
-//
+/**
+ * Music Player Main Entry Point
+ * LVGL-based music player application
+ */
 
 // include NuttX headers
 #include <nuttx/config.h>
@@ -36,7 +35,7 @@ static void lv_nuttx_uv_loop(uv_loop_t* loop, lv_nuttx_result_t* result)
 
 int main(int argc, FAR char* argv[])
 {
-    // init lvgl
+    // Initialize LVGL
     lv_nuttx_dsc_t info;
     lv_nuttx_result_t result;
     uv_loop_t ui_loop;
@@ -57,9 +56,9 @@ int main(int argc, FAR char* argv[])
         return 1;
     }
 
-    splash_screen_create();  // 首先创建启动页面
+    splash_screen_create();
 
-    // refresh lvgl ui
+    // Start LVGL UI loop
     lv_nuttx_uv_loop(&ui_loop, &result);
 
     lv_nuttx_deinit(&result);

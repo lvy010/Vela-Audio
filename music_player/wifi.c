@@ -139,4 +139,4 @@ void wifi_connect(FAR const wifi_conf_t *conf)
 }
 
 #endif
-// 测试同步修改 - Tue Aug 26 06:40:52 UTC 2025
+// Test sync modification - Tue Aug 26 06:40:52 UTC 2025
