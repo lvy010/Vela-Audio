@@ -1,8 +1,8 @@
-// Music Player - LVGL based audio player
+// Music Player - LVGL 9.x based audio player
 
 // Includes
 
-#include "music_player.h"
+#include "music_player2.h"
 #include "playlist_manager.h"
 #include "font_config.h"
 #include <stdio.h>
@@ -373,7 +373,7 @@ static void app_refresh_play_status(void)
                 static char backup_paths[4][512];
                 snprintf(backup_paths[0], sizeof(backup_paths[0]), "/data/res/musics/%s", filename);
                 snprintf(backup_paths[1], sizeof(backup_paths[1]), "res/musics/%s", filename);
-                snprintf(backup_paths[2], sizeof(backup_paths[2]), "/root/vela_code/apps/packages/demos/music_player/res/musics/%s", filename);
+                snprintf(backup_paths[2], sizeof(backup_paths[2]), "/root/vela_code/apps/packages/demos/music_player2/res/musics/%s", filename);
                 snprintf(backup_paths[3], sizeof(backup_paths[3]), "./res/musics/%s", filename);
                 
                 audio_path = NULL; // Reset path
@@ -598,7 +598,7 @@ static void app_playlist_event_handler(lv_event_t* e)
         return;  // Handle click and press events
     }
     
-    // 🔊 Provide user feedback
+    // Provide user feedback
     if (code == LV_EVENT_PRESSED) {
         // Visual feedback when pressed
         lv_obj_t* target = lv_event_get_target(e);
@@ -621,14 +621,14 @@ static void app_playlist_event_handler(lv_event_t* e)
         
         // Create message dialog
         lv_obj_t* mbox = lv_msgbox_create(lv_screen_active());
-        lv_msgbox_add_title(mbox, "📂 Empty Playlist");
+        lv_msgbox_add_title(mbox, "Empty Playlist");
         lv_msgbox_add_text(mbox, "No music files found.\nPlease add music files to continue.");
         lv_msgbox_add_close_button(mbox);
         
         return;
     }
 
-    // 🎬 Use traditional playlist - optimize memory check
+    // Use traditional playlist - optimize memory check
     if (playlist_manager_is_open()) {
         // If playlist is already open, close it
         LV_LOG_USER("Closing playlist (songs: %d)", R.album_count);
@@ -637,7 +637,7 @@ static void app_playlist_event_handler(lv_event_t* e)
         // Create playlist - relax memory limits
         LV_LOG_USER("Opening playlist (songs: %d)", R.album_count);
         
-        // 🏗️ Smart container selection logic
+        // Smart container selection logic
         lv_obj_t* parent_container = lv_layer_top();
         if (!parent_container) {
             LV_LOG_WARN("Top container unavailable, using active screen");
@@ -734,7 +734,7 @@ static void app_audio_event_handler(lv_event_t* e)
         return;
     }
 
-    // 🎚️ Smart volume bar display toggle
+    // Smart volume bar display toggle
     bool volume_visible = lv_obj_has_state(R.ui.volume_bar, LV_STATE_USER_1);
     
     if (volume_visible) {
@@ -753,7 +753,7 @@ static void app_audio_event_handler(lv_event_t* e)
         app_refresh_volume_countdown_timer();
     }
     
-    // 🔄 Update volume icon status
+    // Update volume icon status
     if (R.ui.audio) {
         if (C.volume > 0) {
             lv_image_set_src(R.ui.audio, R.images.audio);
@@ -798,7 +798,7 @@ static void app_switch_album_event_handler(lv_event_t* e)
         return;
     }
     
-    // 🔒 Basic state validation
+    // Basic state validation
     if (R.album_count == 0) {
         LV_LOG_WARN("Playlist is empty, cannot switch songs");
         return;
@@ -812,7 +812,7 @@ static void app_switch_album_event_handler(lv_event_t* e)
     
     switch_album_mode_t direction = (switch_album_mode_t)(lv_uintptr_t)lv_event_get_user_data(e);
     
-    // 🔍 Validate direction parameter
+    // Validate direction parameter
     if (direction != SWITCH_ALBUM_MODE_PREV && direction != SWITCH_ALBUM_MODE_NEXT) {
         LV_LOG_ERROR("Invalid switch direction: %d", direction);
         return;
@@ -838,7 +838,7 @@ static void app_switch_album_event_handler(lv_event_t* e)
         break;
     }
     
-    // 🔍 Final validation
+    // Final validation
     if (new_index < 0 || new_index >= R.album_count) {
         LV_LOG_ERROR("Calculated index is invalid: %ld (range: 0-%d)", (long)new_index, R.album_count - 1);
         return;
@@ -846,7 +846,7 @@ static void app_switch_album_event_handler(lv_event_t* e)
 
     // Switch song
 
-    // 🚀 Execute switch
+    // Execute switch
     app_switch_to_album(new_index);
     // Song switch successful
 }
@@ -885,7 +885,7 @@ static void app_play_status_event_handler(lv_event_t* e)
         return;
     }
     
-    // 🔒 Status check - ensure player is in valid state
+    // Status check - ensure player is in valid state
     if (!C.current_album && R.album_count > 0) {
         LV_LOG_WARN("No album selected currently, automatically selecting first song");
         app_switch_to_album(0);
@@ -917,7 +917,7 @@ static void app_play_status_event_handler(lv_event_t* e)
     
     // State switch
     
-    // 🚀 Execute state switch
+    // Execute state switch
     app_set_play_status(new_status);
     // Play status switch completed
 }
@@ -984,14 +984,14 @@ static void app_playback_progress_bar_event_handler(lv_event_t* e)
 {
     // Progress bar interaction handling
     if (!e) {
-        LV_LOG_ERROR("❌ Progress bar event pointer is null");
+        LV_LOG_ERROR("Progress bar event pointer is null");
         return;
     }
     
     lv_event_code_t code = lv_event_get_code(e);
     
     if (!C.current_album) {
-        LV_LOG_ERROR("❌ Current album is empty, cannot operate progress bar");
+        LV_LOG_ERROR("Current album is empty, cannot operate progress bar");
         return;
     }
     
@@ -1191,7 +1191,7 @@ static void app_playback_progress_bar_event_handler(lv_event_t* e)
         break;
     }
     case LV_EVENT_PRESS_LOST: {
-        // 🔄 Safely restore state when focus is unexpectedly lost
+        // Safely restore state when focus is unexpectedly lost
         if (progress_state.is_seeking) {
             progress_state.is_seeking = false;
             
@@ -1250,7 +1250,7 @@ static bool init_resource(void)
 {
     // Simplified version: only initialize basic functional modules
     
-    // Use LVGL built-in fonts - only use fonts enabled in configuration
+    // Use LVGL 9.x built-in fonts - only use fonts enabled in configuration
     R.fonts.size_16.normal = &lv_font_montserrat_16;
     R.fonts.size_22.bold = &lv_font_montserrat_22;
     R.fonts.size_24.normal = &lv_font_montserrat_24;
@@ -1280,7 +1280,7 @@ static bool init_resource(void)
     lv_style_set_opa(&R.styles.button_default, LV_OPA_COVER);
     lv_style_set_opa(&R.styles.button_pressed, LV_OPA_80);  // Slightly reduce opacity when clicked
     
-    // 🔥 Enhanced button click feedback
+    // Enhanced button click feedback
     lv_style_set_shadow_width(&R.styles.button_default, 8);
     lv_style_set_shadow_color(&R.styles.button_default, MODERN_PRIMARY_COLOR);
     lv_style_set_shadow_opa(&R.styles.button_default, LV_OPA_40);
@@ -1290,7 +1290,7 @@ static bool init_resource(void)
     lv_style_set_shadow_color(&R.styles.button_pressed, MODERN_PRIMARY_COLOR);
     lv_style_set_shadow_opa(&R.styles.button_pressed, LV_OPA_60);
     
-    // 🎯 Add button borders to improve visibility
+    // Add button borders to improve visibility
     lv_style_set_border_width(&R.styles.button_default, 2);
     lv_style_set_border_color(&R.styles.button_default, lv_color_hex(0x4B5563));
     lv_style_set_border_opa(&R.styles.button_default, LV_OPA_50);
@@ -1366,7 +1366,7 @@ static bool init_resource(void)
     R.images.music = ICONS_ROOT "/music.png";
     R.images.nocover = ICONS_ROOT "/nocover.png";
     
-    // 🚫 Background image disabled - user requested to remove background.png
+    // Background image disabled - user requested to remove background.png
     // R.images.background = ICONS_ROOT "/background.png";  // Removed
     R.images.background = NULL;  // Explicitly set to NULL
 
@@ -1434,7 +1434,7 @@ static void app_create_main_page(void)
 {
     lv_obj_t* root = lv_screen_active();
 
-    // 🎨 Professional solid background design - remove background.png dependency
+    // Professional solid background design - remove background.png dependency
     // Adopt dark professional theme to enhance user experience and performance
     lv_obj_set_style_bg_color(root, lv_color_hex(0x121212), LV_PART_MAIN);  // Dark theme
     lv_obj_set_style_bg_grad_color(root, lv_color_hex(0x0F0F0F), LV_PART_MAIN);  // Deeper gradient
@@ -1447,7 +1447,7 @@ static void app_create_main_page(void)
     lv_obj_set_flex_align(root, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
     lv_obj_set_style_pad_all(root, 16, LV_PART_MAIN);
 
-    // 🔝 Top status bar - WiFi signal, battery, time area
+    // Top status bar - WiFi signal, battery, time area
     lv_obj_t* status_bar = lv_obj_create(root);
     lv_obj_remove_style_all(status_bar);
     lv_obj_set_size(status_bar, LV_PCT(100), 48);
@@ -1544,7 +1544,7 @@ static void app_create_main_page(void)
     lv_obj_set_size(vinyl_ring, 320, 320);
     lv_obj_center(vinyl_ring);
 
-    // 🖼️ Album cover image - perfect circular display, complete image without distortion
+    // Album cover image - perfect circular display, complete image without distortion
     lv_obj_t* album_cover = lv_image_create(album_container);
     R.ui.album_cover = album_cover;
     lv_obj_remove_style_all(album_cover);
@@ -1658,7 +1658,7 @@ static void app_create_main_page(void)
     lv_obj_set_style_pad_all(control_area, 20, LV_PART_MAIN);  // Increase padding from 12 to 20
     lv_obj_set_style_pad_column(control_area, 16, LV_PART_MAIN);  // Set column spacing between buttons
 
-    // 🎮 Professional playlist button - apply professional configuration
+    // Professional playlist button - apply professional configuration
     lv_obj_t* playlist_btn = lv_button_create(control_area);
     lv_obj_t* playlist_icon = lv_image_create(playlist_btn);
     lv_obj_remove_style_all(playlist_btn);
@@ -1672,7 +1672,7 @@ static void app_create_main_page(void)
     lv_obj_set_size(playlist_icon, 28, 28);
     lv_obj_center(playlist_icon);
 
-    // 🎮 Professional previous button
+    // Professional previous button
     lv_obj_t* prev_btn = lv_button_create(control_area);
     lv_obj_t* prev_icon = lv_image_create(prev_btn);
     lv_obj_remove_style_all(prev_btn);
@@ -1688,7 +1688,7 @@ static void app_create_main_page(void)
 
     // Simplified version: remove 10s rewind button, keep interface clean
 
-    // 🎮 Professional main play button - special glow effect
+    // Professional main play button - special glow effect
     lv_obj_t* play_btn = lv_button_create(control_area);
     lv_obj_t* play_icon = lv_image_create(play_btn);
     R.ui.play_btn = play_icon;
@@ -1699,7 +1699,7 @@ static void app_create_main_page(void)
     lv_obj_set_style_bg_color(play_btn, lv_color_hex(0x374151), LV_PART_MAIN);
     lv_obj_set_style_bg_color(play_btn, lv_color_hex(0x4B5563), LV_PART_MAIN | LV_STATE_PRESSED);
     
-    // 🔥 Main button special glow effect
+    // Main button special glow effect
     lv_obj_set_style_shadow_width(play_btn, 25, LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(play_btn, 35, LV_STATE_PRESSED);
     lv_obj_set_style_shadow_color(play_btn, lv_color_hex(0x00BFFF), LV_PART_MAIN);  // Blue shadow
@@ -1712,7 +1712,7 @@ static void app_create_main_page(void)
 
     // Simplified version: remove 10s fast forward button, keep interface clean
 
-    // 🎮 Pro next button
+    // Pro next button
     lv_obj_t* next_btn = lv_button_create(control_area);
     lv_obj_t* next_icon = lv_image_create(next_btn);
     lv_obj_remove_style_all(next_btn);
@@ -1726,7 +1726,7 @@ static void app_create_main_page(void)
     lv_obj_set_size(next_icon, 32, 32);
     lv_obj_center(next_icon);
 
-    // 🎮 Pro volume button
+    // Pro volume button
     lv_obj_t* volume_btn = lv_button_create(control_area);
     lv_obj_t* volume_icon = lv_image_create(volume_btn);
     R.ui.audio = volume_icon;
@@ -1743,10 +1743,10 @@ static void app_create_main_page(void)
     // Create top layer overlay (volume bar, playlist, etc)
     app_create_top_layer();
 
-    // 🎯 Pro button interaction applied through configuration system
+    // Pro button interaction applied through configuration system
     // UI interaction optimization applied
 
-    // 🎯 Pro event binding - supports multiple interaction modes and enhanced feedback
+    // Pro event binding - supports multiple interaction modes and enhanced feedback
     lv_obj_add_event_cb(playlist_btn, app_playlist_event_handler, LV_EVENT_CLICKED, NULL);
     lv_obj_add_event_cb(playlist_btn, app_playlist_event_handler, LV_EVENT_PRESSED, NULL);
     lv_obj_add_event_cb(playlist_btn, app_playlist_event_handler, LV_EVENT_RELEASED, NULL);
@@ -1771,14 +1771,14 @@ static void app_create_main_page(void)
     lv_obj_add_event_cb(prev_btn, app_switch_album_event_handler, LV_EVENT_LONG_PRESSED_REPEAT, (lv_uintptr_t*)SWITCH_ALBUM_MODE_PREV);
     lv_obj_add_event_cb(next_btn, app_switch_album_event_handler, LV_EVENT_LONG_PRESSED_REPEAT, (lv_uintptr_t*)SWITCH_ALBUM_MODE_NEXT);
     
-    // 🎛️ Enhanced progress bar interaction - supports click jump and drag
+    // Enhanced progress bar interaction - supports click jump and drag
     lv_obj_add_event_cb(progress_bar, app_playback_progress_bar_event_handler, LV_EVENT_ALL, NULL);
     lv_obj_set_ext_click_area(progress_bar, 15);  // Expand progress bar touch area to improve drag experience
     
-    // 🔊 Enhanced volume bar interaction
+    // Enhanced volume bar interaction
     lv_obj_set_ext_click_area(R.ui.volume_bar, 10);  // Extend volume bar click area
     
-    // 🎨 Button long press delay set through pro configuration system
+    // Button long press delay set through pro configuration system
     // Event binding completed
 
     // Start time update timer
@@ -1860,8 +1860,8 @@ static void read_configs(void)
 
 static void reload_music_config(void)
 {
-    // 🧹 Safe memory cleanup - enhanced version
-    LV_LOG_USER("🔄 Starting to reload music configuration...");
+    // Safe memory cleanup - enhanced version
+    LV_LOG_USER("Starting to reload music configuration...");
     
     /* Clear previous music config */
     if (R.albums) {
@@ -1886,7 +1886,7 @@ static void reload_music_config(void)
     
     R.album_count = 0;
     
-    // 💾 Memory statistics
+    // Memory statistics
     // Memory cleanup completed - silent mode
 
     /* Load music config - enhanced memory safety */
@@ -1895,14 +1895,14 @@ static void reload_music_config(void)
     char* buff = NULL;
     cJSON* json = NULL;
     
-    // 🔒 Safe file opening
+    // Safe file opening
     lv_fs_res_t res = lv_fs_open(&file, MUSICS_ROOT "/manifest.json", LV_FS_MODE_RD);
     if (res != LV_FS_RES_OK) {
         LV_LOG_ERROR("Cannot open music manifest file: %s", MUSICS_ROOT "/manifest.json");
         return;
     }
 
-    // 📏 Safe file size retrieval
+    // Safe file size retrieval
     if (lv_fs_seek(&file, 0, LV_FS_SEEK_END) != LV_FS_RES_OK ||
         lv_fs_tell(&file, &file_size) != LV_FS_RES_OK ||
         lv_fs_seek(&file, 0, LV_FS_SEEK_SET) != LV_FS_RES_OK) {
@@ -1911,7 +1911,7 @@ static void reload_music_config(void)
         return;
     }
 
-    // 💾 Safe memory allocation
+    // Safe memory allocation
     if (file_size == 0 || file_size > 2 * 1024 * 1024) {  // Limit 2MB
         LV_LOG_ERROR("Music manifest file size abnormal: %lu bytes", (unsigned long)file_size);
         lv_fs_close(&file);
@@ -1936,7 +1936,7 @@ static void reload_music_config(void)
     
     lv_fs_close(&file);
 
-    // 🔍 JSON parsing
+    // JSON parsing
     json = cJSON_Parse(buff);
     if (json == NULL) {
         const char* error_ptr = cJSON_GetErrorPtr();
@@ -2003,7 +2003,7 @@ static void reload_music_config(void)
         LV_LOG_USER("Album %d: %s - %s | %s %s %lu", i, R.albums[i].name, R.albums[i].artist, R.albums[i].path, R.albums[i].cover, (unsigned long)total_time);
     }
 
-    // 🧹 Safe resource cleanup
+    // Safe resource cleanup
     goto cleanup_success;
 
 cleanup_and_exit:

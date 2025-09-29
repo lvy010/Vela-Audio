@@ -1,6 +1,6 @@
 # Vela Audio
 
-Vela Audio是一个嵌入式音乐播放器，基于 OpenVela 系统设计。提供现代化的 UI 界面，支持音频播放、智能播放列表管理、启动页面、音量控制等功能。采用模块化架构设计，易于扩展和维护。
+Vela Audio是一个嵌入式音乐播放器，基于 openvela 系统设计。提供现代化的 UI 界面，支持音频播放、智能播放列表管理、启动页面、音量控制等功能。采用模块化架构设计，易于扩展和维护。
 
 ## 目录
 
@@ -44,8 +44,8 @@ Vela Audio是一个嵌入式音乐播放器，基于 OpenVela 系统设计。提
 支持 ARM 架构的嵌入式设备，具备音频输出和显示功能。
 
 ### 软件要求
-- **操作系统**：OpenVela
-- **图形库**：LVGL 8.x
+- **操作系统**：openvela
+- **图形库**：LVGL 9.x
 - **音频库**：NuttX Audio 框架 / 模拟器音频控制器
 - **网络**：Wi-Fi 驱动支持
 
@@ -59,11 +59,11 @@ Vela Audio是一个嵌入式音乐播放器，基于 OpenVela 系统设计。提
 ## 项目结构
 
 ```
-music_player/
+music_player2/
 ├── 核心模块/                      # 主要应用代码
-│   ├── music_player.c           # 主应用逻辑和UI界面
-│   ├── music_player.h           # 主应用头文件和数据结构
-│   ├── music_player_main.c      # 应用程序入口点
+│   ├── music_player2.c          # 主应用逻辑和UI界面
+│   ├── music_player2.h          # 主应用头文件和数据结构
+│   ├── music_player2_main.c     # 应用程序入口点
 │   ├── splash_screen.c          # 启动页面模块（独立）
 │   ├── playlist_manager.c       # 播放列表管理器（独立）
 │   └── playlist_manager.h       # 播放列表管理器头文件
@@ -95,7 +95,7 @@ music_player/
 # 安装必要工具
 sudo apt update && sudo apt install -y android-tools-adb build-essential git
 
-# 克隆 OpenVela 仓库
+# 克隆 openvela 仓库
 git clone <openvela-repo-url> && cd vela_code
 ```
 
@@ -120,10 +120,10 @@ cd nuttx && ln -sf vela_ap.elf nuttx && cd ..
 sleep 15 && adb connect 127.0.0.1:5555
 
 # 部署资源文件
-adb -s emulator-5554 push apps/packages/demos/music_player/res /data/
+adb -s emulator-5554 push apps/packages/demos/music_player2/res /data/
 
 # 启动音乐播放器
-adb -s emulator-5554 shell "music_player &"
+adb -s emulator-5554 shell "music_player2 &"
 ```
 
 ### 配置文件说明
@@ -210,7 +210,7 @@ adb push res/musics/ /data/res/musics/
 
 #### 修改主题颜色
 ```c
-// 在 music_player.c 中修改
+// 在 music_player2.c 中修改
 #define MODERN_PRIMARY_COLOR        lv_color_hex(0x00BFFF)
 #define MODERN_SECONDARY_COLOR      lv_color_hex(0xFF6B6B)
 #define MODERN_BACKGROUND_COLOR     lv_color_hex(0x121212)
@@ -256,8 +256,8 @@ adb push res/musics/ /data/res/musics/
 
 ## 致谢
 
-- **OpenVela**：提供优秀的嵌入式操作系统平台
-- **LVGL 社区**：提供图形库和UI组件支持
+- **openvela**：提供嵌入式操作系统平台
+- **LVGL 9.x 社区**：提供图形库和UI组件支持
 
 ---
 

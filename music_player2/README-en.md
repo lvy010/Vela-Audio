@@ -1,6 +1,6 @@
 # Vela Audio
 
-Vela Audio is an embedded music player designed based on the OpenVela system. It provides a modern UI interface with support for audio playback, intelligent playlist management, splash screen, volume control, and other features. Built with a modular architecture design for easy extension and maintenance.
+Vela Audio is an embedded music player designed based on the openvela system. It provides a modern UI interface with support for audio playback, intelligent playlist management, splash screen, volume control, and other features. Built with a modular architecture design for easy extension and maintenance.
 
 ## Table of Contents
 
@@ -44,8 +44,8 @@ Vela Audio is an embedded music player designed based on the OpenVela system. It
 ARM architecture embedded devices with audio output and display capabilities.
 
 ### Software Requirements
-- **Operating System**: OpenVela
-- **Graphics Library**: LVGL 8.x
+- **Operating System**: openvela
+- **Graphics Library**: LVGL 9.x
 - **Audio Library**: NuttX Audio Framework / Simulator Audio Controller
 - **Network**: Wi-Fi driver support
 
@@ -59,11 +59,11 @@ ARM architecture embedded devices with audio output and display capabilities.
 ## Project Structure
 
 ```
-music_player/
+music_player2/
 ├── Core Modules/                      # Main application code
-│   ├── music_player.c           # Main application logic and UI interface
-│   ├── music_player.h           # Main application header and data structures
-│   ├── music_player_main.c      # Application entry point
+│   ├── music_player2.c          # Main application logic and UI interface
+│   ├── music_player2.h          # Main application header and data structures
+│   ├── music_player2_main.c     # Application entry point
 │   ├── splash_screen.c          # Splash screen module (independent)
 │   ├── playlist_manager.c       # Playlist manager (independent)
 │   └── playlist_manager.h       # Playlist manager header
@@ -95,7 +95,7 @@ music_player/
 # Install necessary tools
 sudo apt update && sudo apt install -y android-tools-adb build-essential git
 
-# Clone OpenVela repository
+# Clone openvela repository
 git clone <openvela-repo-url> && cd vela_code
 ```
 
@@ -120,10 +120,10 @@ cd nuttx && ln -sf vela_ap.elf nuttx && cd ..
 sleep 15 && adb connect 127.0.0.1:5555
 
 # Deploy resource files
-adb -s emulator-5554 push apps/packages/demos/music_player/res /data/
+adb -s emulator-5554 push apps/packages/demos/music_player2/res /data/
 
 # Start music player
-adb -s emulator-5554 shell "music_player &"
+adb -s emulator-5554 shell "music_player2 &"
 ```
 
 ### Configuration File Description
@@ -210,7 +210,7 @@ adb push res/musics/ /data/res/musics/
 
 #### Modify Theme Colors
 ```c
-// Modify in music_player.c
+// Modify in music_player2.c
 #define MODERN_PRIMARY_COLOR        lv_color_hex(0x00BFFF)
 #define MODERN_SECONDARY_COLOR      lv_color_hex(0xFF6B6B)
 #define MODERN_BACKGROUND_COLOR     lv_color_hex(0x121212)
@@ -256,10 +256,9 @@ This project is licensed under the Apache License 2.0 open source license.
 
 ## Acknowledgments
 
-- **OpenVela**: Providing excellent embedded operating system platform
-- **LVGL Community**: Providing graphics library and UI component support
+- **openvela**: Providing excellent embedded operating system platform
+- **LVGL 9.x Community**: Providing graphics library and UI component support
 
 ---
 
 *Last updated: 2025-09-29*  
-*Current version: v2.2.0*

@@ -1,6 +1,6 @@
 /**
  * Music Player Header
- * Core data structures and definitions for LVGL-based music player
+ * Core data structures and definitions for LVGL 9.x-based music player
  */
 
 #ifndef LVGL_APP_H

@@ -1,6 +1,6 @@
 /**
  * Music Player Main Entry Point
- * LVGL-based music player application
+ * LVGL 9.x-based music player application
  */
 
 // include NuttX headers
@@ -31,18 +31,18 @@ static void lv_nuttx_uv_loop(uv_loop_t* loop, lv_nuttx_result_t* result)
     lv_nuttx_uv_deinit(&data);
 }
 
-#include "music_player.h"
+#include "music_player2.h"
 
 int main(int argc, FAR char* argv[])
 {
-    // Initialize LVGL
+    // Initialize LVGL 9.x
     lv_nuttx_dsc_t info;
     lv_nuttx_result_t result;
     uv_loop_t ui_loop;
     lv_memset(&ui_loop, 0, sizeof(uv_loop_t));
 
     if (lv_is_initialized()) {
-        LV_LOG_ERROR("LVGL already initialized! aborting.");
+        LV_LOG_ERROR("LVGL 9.x already initialized! aborting.");
         return -1;
     }
 
@@ -58,7 +58,7 @@ int main(int argc, FAR char* argv[])
 
     splash_screen_create();
 
-    // Start LVGL UI loop
+    // Start LVGL 9.x UI loop
     lv_nuttx_uv_loop(&ui_loop, &result);
 
     lv_nuttx_deinit(&result);

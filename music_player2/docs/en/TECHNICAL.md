@@ -15,7 +15,7 @@ Vela Audio adopts a modular layered architecture design to ensure code maintaina
 **Core Design Principles**:
 - **Modularity**: Each functional module is independently designed with clear responsibilities
 - **Layered Architecture**: Clear hierarchical structure reducing coupling
-- **Event-Driven**: Responsive design based on LVGL event system
+- **Event-Driven**: Responsive design based on LVGL 9.x event system
 - **Resource Management**: Unified resource lifecycle management
 - **State Machine**: Predictable state transitions and management
 
@@ -25,7 +25,7 @@ The system adopts a six-layer architecture design, from bottom to top including:
 
 ```
 ┌─────────────────────────────────────────┐
-│           User Interface Layer (LVGL)   │  ← Graphics rendering and touch interaction
+│           User Interface Layer (LVGL 9.x) │  ← Graphics rendering and touch interaction
 ├─────────────────────────────────────────┤
 │             UI Module Layer             │  ← Splash screen, main interface, playlist manager
 ├─────────────────────────────────────────┤
@@ -52,7 +52,7 @@ Resource initialization → Font loading → Configuration reading → UI compon
 
 #### 2. User Interaction Flow
 ```
-User operation → LVGL event → Event handler → State update → UI refresh
+User operation → LVGL 9.x event → Event handler → State update → UI refresh
     ↓
 Audio control → Playlist update → Interface feedback
 ```

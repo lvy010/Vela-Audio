@@ -69,7 +69,7 @@ adb shell "cd /data/res/musics && ls -la *.mp3"
 **Symptoms**: Garbled font display, interface layout disorder, abnormal colors
 
 **Troubleshooting Steps**:
-- Check if LVGL configuration is correct
+- Check if LVGL 9.x configuration is correct
 - Ensure font files are loaded correctly
 - Check screen resolution settings
 - Verify resource file paths
@@ -269,7 +269,7 @@ If you encounter issues not covered in this document, please submit an Issue and
 
 ### Required Information
 - **Operating System**: Ubuntu version, etc.
-- **OpenVela Version**: Build version and date
+- **openvela Version**: Build version and date
 - **Hardware Platform**: Target device or emulator
 - **Reproduction Steps**: Detailed operation steps
 - **Expected Behavior**: What should happen

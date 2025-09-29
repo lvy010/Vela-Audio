@@ -8,7 +8,7 @@ config LVX_USE_DEMO_MUSIC_PLAYER
 	default n
 	help
 	  Professional music player for STM32H750B-DK development board.
-	  Features: MP3/WAV playback, LVGL UI, I2S audio, DMA transfer,
+	  Features: MP3/WAV playback, LVGL 9.x UI, I2S audio, DMA transfer,
 	  SD card file management, gesture control, and optimized performance.
 	
 if LVX_USE_DEMO_MUSIC_PLAYER
