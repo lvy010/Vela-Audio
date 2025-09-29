@@ -38,4 +38,3 @@
 ## 开源协议
 
 本项目采用 [Apache License 2.0](LICENSE) 开源协议  
-欢迎提交 Issue 和 Pull Request 贡献代码
