@@ -1,10 +1,8 @@
-# Vela Audio
-
 <div align="center">
 
-**基于 OpenVela 系统的现代化音乐播放器**
+# **基于 openvela 系统的音乐播放器**
 
-[![OpenVela](https://img.shields.io/badge/Platform-OpenVela-blue.svg)](https://openvela.org)
+[![openvela](https://img.shields.io/badge/Platform-openvela-blue.svg)](https://openvela.org)
 [![LVGL](https://img.shields.io/badge/GUI-LVGL%209.x-green.svg)](https://lvgl.io)
 [![License](https://img.shields.io/badge/License-Apache%202.0-orange.svg)](LICENSE)
 [![Version](https://img.shields.io/badge/Version-v2.2.0-red.svg)](music_player/docs/ch/CHANGELOG.md)
@@ -26,10 +24,9 @@
 
 ## 技术特性
 
-- **系统平台**：OpenVela/NuttX 嵌入式系统
+- **系统平台**：openvela/NuttX 嵌入式系统
 - **图形界面**：LVGL 9.x，32位色深渲染
 - **架构设计**：模块化设计，6个独立模块，事件驱动
-- **核心功能**：音频播放、播放列表、音量控制、启动页面
 
 ## 文档导航
 
