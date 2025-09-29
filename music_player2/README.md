@@ -12,13 +12,11 @@ Vela Audio是一个嵌入式音乐播放器，基于 openvela 系统设计。提
 - [自定义指南](#自定义指南)
 - [贡献指南](#贡献指南)
 
-## 📚 详细文档
+## 详细文档
 
-| 文档类型 | 中文文档 | English Documentation |
-|----------|----------|----------------------|
-| 🔧 故障排除 | [故障排除指南](docs/ch/TROUBLESHOOTING.md) | [Troubleshooting Guide](docs/en/TROUBLESHOOTING.md) |
-| 🏗️ 技术架构 | [技术文档](docs/ch/TECHNICAL.md) | [Technical Documentation](docs/en/TECHNICAL.md) |
-| 📋 版本历史 | [更新日志](docs/ch/CHANGELOG.md) | [Changelog](docs/en/CHANGELOG.md) |
+- [故障排除指南](docs/ch/TROUBLESHOOTING.md)
+- [技术文档](docs/ch/TECHNICAL.md)
+- [更新日志](docs/ch/CHANGELOG.md)
 
 ## 功能特性
 
@@ -90,10 +88,41 @@ music_player2/
 │   ├── Kconfig
 │   ├── Makefile
 │   └── Make.defs
+├── docs/
+│   ├── ch/                      # 中文文档
+│   │   ├── CHANGELOG.md         # 更新日志
+│   │   ├── TECHNICAL.md         # 技术文档
+│   │   └── TROUBLESHOOTING.md   # 故障排除
+│   └── en/                      # English Documentation
+│       ├── CHANGELOG.md         # Changelog
+│       ├── TECHNICAL.md         # Technical Documentation
+│       └── TROUBLESHOOTING.md   # Troubleshooting Guide
 └── README.md
 ```
 
 ## 启动指南
+
+### 环境准备
+```bash
+# 安装必要的工具
+sudo apt update && sudo apt install -y android-tools-adb build-essential git
+
+# 克隆 openvela 仓库
+git clone <openvela-repo-url> && cd vela_code
+```
+
+### 配置和构建
+```bash
+# 配置音乐播放器
+echo "CONFIG_LVX_USE_DEMO_MUSIC_PLAYER=y" >> vendor/openvela/boards/vela/configs/goldfish-armeabi-v7a-ap/defconfig
+echo 'CONFIG_LVX_MUSIC_PLAYER_DATA_ROOT="/data"' >> vendor/openvela/boards/vela/configs/goldfish-armeabi-v7a-ap/defconfig
+
+# 构建项目
+./build.sh vendor/openvela/boards/vela/configs/goldfish-armeabi-v7a-ap distclean -j8
+./build.sh vendor/openvela/boards/vela/configs/goldfish-armeabi-v7a-ap -j8
+```
+
+### 启动和部署
 ```bash
 # 启动模拟器
 cd nuttx && ln -sf vela_ap.elf nuttx && cd ..

@@ -12,13 +12,11 @@ Vela Audio is an embedded music player designed based on the openvela system. It
 - [Customization Guide](#customization-guide)
 - [Contributing](#contributing)
 
-## 📚 Detailed Documentation
+## Detailed Documentation
 
-| Document Type | 中文文档 | English Documentation |
-|---------------|----------|----------------------|
-| 🔧 Troubleshooting | [故障排除指南](docs/ch/TROUBLESHOOTING.md) | [Troubleshooting Guide](docs/en/TROUBLESHOOTING.md) |
-| 🏗️ Technical Architecture | [技术文档](docs/ch/TECHNICAL.md) | [Technical Documentation](docs/en/TECHNICAL.md) |
-| 📋 Version History | [更新日志](docs/ch/CHANGELOG.md) | [Changelog](docs/en/CHANGELOG.md) |
+- [Troubleshooting Guide](docs/en/TROUBLESHOOTING.md)
+- [Technical Documentation](docs/en/TECHNICAL.md)
+- [Changelog](docs/en/CHANGELOG.md)
 
 ## Features
 
@@ -90,6 +88,15 @@ music_player2/
 │   ├── Kconfig
 │   ├── Makefile
 │   └── Make.defs
+├── docs/
+│   ├── ch/                      # 中文文档
+│   │   ├── CHANGELOG.md         # 更新日志
+│   │   ├── TECHNICAL.md         # 技术文档
+│   │   └── TROUBLESHOOTING.md   # 故障排除
+│   └── en/                      # English Documentation
+│       ├── CHANGELOG.md         # Changelog
+│       ├── TECHNICAL.md         # Technical Documentation
+│       └── TROUBLESHOOTING.md   # Troubleshooting Guide
 └── README.md
 ```
 
