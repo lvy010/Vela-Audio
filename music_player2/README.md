@@ -60,57 +60,35 @@ Vela Audio是一个嵌入式音乐播放器，基于 openvela 系统设计。提
 
 ```
 music_player2/
-├── 核心模块/                      # 主要应用代码
-│   ├── music_player2.c          # 主应用逻辑和UI界面
-│   ├── music_player2.h          # 主应用头文件和数据结构
-│   ├── music_player2_main.c     # 应用程序入口点
-│   ├── splash_screen.c          # 启动页面模块（独立）
-│   ├── playlist_manager.c       # 播放列表管理器（独立）
-│   └── playlist_manager.h       # 播放列表管理器头文件
-├── 音频处理模块/                  # 音频相关代码
-│   ├── audio_ctl.c              # 音频控制
-│   └── audio_ctl.h              # 音频控制头文件
-├── 字体配置模块/                  # 字体系统
-│   ├── font_config.c            # 字体配置实现
-│   └── font_config.h            # 字体配置头文件
-├── 网络模块/                      # 网络连接代码
-│   ├── wifi.c                   # Wi-Fi 管理模块
-│   └── wifi.h                   # Wi-Fi 管理头文件
-├── res/                         # 资源文件目录
-│   ├── fonts/                   # 字体文件
-│   ├── icons/                   # 图标文件
-│   ├── musics/                  # 音乐文件目录
-│   └── config.json             # 全局配置文件（Wi-Fi等）
-├── 构建配置/                      # 构建系统文件
-│   ├── Kconfig                 # 内核配置选项
-│   ├── Makefile                # 主构建文件
-│   └── Make.defs               # 构建定义
-└── README.md                    # 项目文档（本文件）
+├── Core Modules/
+│   ├── music_player2.c
+│   ├── music_player2.h
+│   ├── music_player2_main.c
+│   ├── splash_screen.c
+│   ├── playlist_manager.c
+│   └── playlist_manager.h
+├── Audio Processing Module/
+│   ├── audio_ctl.c
+│   └── audio_ctl.h
+├── Font Configuration Module/
+│   ├── font_config.c
+│   └── font_config.h
+├── Network Module/
+│   ├── wifi.c
+│   └── wifi.h
+├── res/
+│   ├── fonts/
+│   ├── icons/
+│   ├── musics/
+│   └── config.json
+├── Build Configuration/
+│   ├── Kconfig
+│   ├── Makefile
+│   └── Make.defs
+└── README.md
 ```
 
 ## 启动指南
-
-### 环境准备
-```bash
-# 安装必要工具
-sudo apt update && sudo apt install -y android-tools-adb build-essential git
-
-# 克隆 openvela 仓库
-git clone <openvela-repo-url> && cd vela_code
-```
-
-### 配置与构建
-```bash
-# 配置音乐播放器
-echo "CONFIG_LVX_USE_DEMO_MUSIC_PLAYER=y" >> vendor/openvela/boards/vela/configs/goldfish-armeabi-v7a-ap/defconfig
-echo 'CONFIG_LVX_MUSIC_PLAYER_DATA_ROOT="/data"' >> vendor/openvela/boards/vela/configs/goldfish-armeabi-v7a-ap/defconfig
-
-# 构建项目
-./build.sh vendor/openvela/boards/vela/configs/goldfish-armeabi-v7a-ap distclean -j8
-./build.sh vendor/openvela/boards/vela/configs/goldfish-armeabi-v7a-ap -j8
-```
-
-### 启动与部署
 ```bash
 # 启动模拟器
 cd nuttx && ln -sf vela_ap.elf nuttx && cd ..

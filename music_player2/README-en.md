@@ -60,32 +60,32 @@ ARM architecture embedded devices with audio output and display capabilities.
 
 ```
 music_player2/
-├── Core Modules/                      # Main application code
-│   ├── music_player2.c          # Main application logic and UI interface
-│   ├── music_player2.h          # Main application header and data structures
-│   ├── music_player2_main.c     # Application entry point
-│   ├── splash_screen.c          # Splash screen module (independent)
-│   ├── playlist_manager.c       # Playlist manager (independent)
-│   └── playlist_manager.h       # Playlist manager header
-├── Audio Processing Module/           # Audio related code
-│   ├── audio_ctl.c              # Audio control
-│   └── audio_ctl.h              # Audio control header
-├── Font Configuration Module/         # Font system
-│   ├── font_config.c            # Font configuration implementation
-│   └── font_config.h            # Font configuration header
-├── Network Module/                    # Network connection code
-│   ├── wifi.c                   # Wi-Fi management module
-│   └── wifi.h                   # Wi-Fi management header
-├── res/                         # Resource files directory
-│   ├── fonts/                   # Font files
-│   ├── icons/                   # Icon files
-│   ├── musics/                  # Music files directory
-│   └── config.json             # Global configuration file (Wi-Fi etc.)
-├── Build Configuration/               # Build system files
-│   ├── Kconfig                 # Kernel configuration options
-│   ├── Makefile                # Main build file
-│   └── Make.defs               # Build definitions
-└── README.md                    # Project documentation (this file)
+├── Core Modules/
+│   ├── music_player2.c
+│   ├── music_player2.h
+│   ├── music_player2_main.c
+│   ├── splash_screen.c
+│   ├── playlist_manager.c
+│   └── playlist_manager.h
+├── Audio Processing Module/
+│   ├── audio_ctl.c
+│   └── audio_ctl.h
+├── Font Configuration Module/
+│   ├── font_config.c
+│   └── font_config.h
+├── Network Module/
+│   ├── wifi.c
+│   └── wifi.h
+├── res/
+│   ├── fonts/
+│   ├── icons/
+│   ├── musics/
+│   └── config.json
+├── Build Configuration/
+│   ├── Kconfig
+│   ├── Makefile
+│   └── Make.defs
+└── README.md
 ```
 
 ## Getting Started
