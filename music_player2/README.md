@@ -88,15 +88,6 @@ music_player2/
 │   ├── Kconfig
 │   ├── Makefile
 │   └── Make.defs
-├── docs/
-│   ├── ch/                      # 中文文档
-│   │   ├── CHANGELOG.md         # 更新日志
-│   │   ├── TECHNICAL.md         # 技术文档
-│   │   └── TROUBLESHOOTING.md   # 故障排除
-│   └── en/                      # English Documentation
-│       ├── CHANGELOG.md         # Changelog
-│       ├── TECHNICAL.md         # Technical Documentation
-│       └── TROUBLESHOOTING.md   # Troubleshooting Guide
 └── README.md
 ```
 
