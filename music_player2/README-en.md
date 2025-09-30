@@ -21,7 +21,7 @@ Vela Audio is an embedded music player designed based on the openvela system. It
 ## Features
 
 ### Core Features
-- Audio playback control (play/pause/stop)
+- Audio playback control
 - Previous/next track switching
 - Volume adjustment control
 - Playlist management
@@ -48,7 +48,7 @@ ARM architecture embedded devices with audio output and display capabilities.
 
 ### Software Requirements
 - **Operating System**: openvela
-- **Graphics Library**: LVGL 9.x
+- **Graphics Library**: LVGL
 - **Audio Library**: NuttX Audio Framework / Simulator Audio Controller
 - **Network**: Wi-Fi driver support
 
@@ -56,8 +56,8 @@ ARM architecture embedded devices with audio output and display capabilities.
 - **Compiler**: arm-none-eabi-gcc
 - **Build System**: Make / NuttX Build System
 - **Debug Tools**: ADB
-- **Host System**: Linux (Ubuntu 22.04 recommended)
-- **Emulator**: QEMU (for testing)
+- **Host System**: Linux
+- **Emulator**: QEMU
 
 ## Project Structure
 
@@ -105,7 +105,7 @@ git clone <openvela-repo-url> && cd vela_code
 ### Configuration and Build
 ```bash
 # Configure music player
-echo "CONFIG_LVX_USE_DEMO_MUSIC_PLAYER=y" >> vendor/openvela/boards/vela/configs/goldfish-armeabi-v7a-ap/defconfig
+echo "CONFIG_VELA_MUSIC_PLAYER=y" >> vendor/openvela/boards/vela/configs/goldfish-armeabi-v7a-ap/defconfig
 echo 'CONFIG_LVX_MUSIC_PLAYER_DATA_ROOT="/data"' >> vendor/openvela/boards/vela/configs/goldfish-armeabi-v7a-ap/defconfig
 
 # Build project
@@ -179,7 +179,7 @@ make CFLAGS="-DDEBUG"
 #### 1. Prepare Audio Files
 ```bash
 # Ensure audio files are in supported format (MP3/WAV)
-# Prepare album cover (recommended 300x300, supports JPG/PNG format)
+# Prepare album cover
 convert cover.jpg -resize 300x300 cover.jpg
 ```
 
@@ -260,7 +260,7 @@ This project is licensed under the Apache License 2.0 open source license.
 ## Acknowledgments
 
 - **openvela**: Providing excellent embedded operating system platform
-- **LVGL 9.x Community**: Providing graphics library and UI component support
+- **LVGL Community**: Providing graphics library and UI component support
 
 ---
 

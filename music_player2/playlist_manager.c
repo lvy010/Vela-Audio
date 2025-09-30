@@ -97,12 +97,9 @@ void playlist_manager_create(lv_obj_t* parent) {
         return;
     }
     
-    // Avoid thread deadlock
-    
     // Create fullscreen container
     playlist_container = lv_obj_create(parent);
     if (!playlist_container) {
-        // Avoid thread deadlock
         return;
     }
     
@@ -158,8 +155,8 @@ void playlist_manager_create(lv_obj_t* parent) {
         create_playlist_item(content, i);
     }
     
+    // Mark playlist as open
     playlist_is_open = true;
-    // Avoid thread deadlock
 }
 
 /**
@@ -170,8 +167,9 @@ void playlist_manager_close(void) {
         lv_obj_del(playlist_container);
         playlist_container = NULL;
     }
+    
+    // Mark playlist as closed
     playlist_is_open = false;
-    // Avoid thread deadlock
 }
 
 /**

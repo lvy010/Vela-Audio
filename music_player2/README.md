@@ -21,7 +21,7 @@ Vela Audio是一个嵌入式音乐播放器，基于 openvela 系统设计。提
 ## 功能特性
 
 ### 核心功能
-- 音频播放控制（播放/暂停/停止）
+- 音频播放控制
 - 上一首/下一首切换
 - 音量调节控制
 - 播放列表管理
@@ -48,7 +48,7 @@ Vela Audio是一个嵌入式音乐播放器，基于 openvela 系统设计。提
 
 ### 软件要求
 - **操作系统**：openvela
-- **图形库**：LVGL 9.x
+- **图形库**：LVGL
 - **音频库**：NuttX Audio 框架 / 模拟器音频控制器
 - **网络**：Wi-Fi 驱动支持
 
@@ -56,8 +56,8 @@ Vela Audio是一个嵌入式音乐播放器，基于 openvela 系统设计。提
 - **编译器**：arm-none-eabi-gcc
 - **构建系统**：Make / NuttX 构建系统
 - **调试工具**：ADB
-- **主机系统**：Linux (推荐 Ubuntu 22.04)
-- **模拟器**：QEMU (用于测试)
+- **主机系统**：Linux
+- **模拟器**：QEMU
 
 ## 项目结构
 
@@ -105,7 +105,7 @@ git clone <openvela-repo-url> && cd vela_code
 ### 配置和构建
 ```bash
 # 配置音乐播放器
-echo "CONFIG_LVX_USE_DEMO_MUSIC_PLAYER=y" >> vendor/openvela/boards/vela/configs/goldfish-armeabi-v7a-ap/defconfig
+echo "CONFIG_VELA_MUSIC_PLAYER=y" >> vendor/openvela/boards/vela/configs/goldfish-armeabi-v7a-ap/defconfig
 echo 'CONFIG_LVX_MUSIC_PLAYER_DATA_ROOT="/data"' >> vendor/openvela/boards/vela/configs/goldfish-armeabi-v7a-ap/defconfig
 
 # 构建项目
@@ -260,7 +260,7 @@ adb push res/musics/ /data/res/musics/
 ## 致谢
 
 - **openvela**：提供嵌入式操作系统平台
-- **LVGL 9.x 社区**：提供图形库和UI组件支持
+- **LVGL 社区**：提供图形库和UI组件支持
 
 ---
 

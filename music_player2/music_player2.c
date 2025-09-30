@@ -1,6 +1,6 @@
-// Music Player - LVGL 9.x based audio player
-
-// Includes
+/**
+ * Music Player - LVGL based audio player
+ */
 
 #include "music_player2.h"
 #include "playlist_manager.h"
@@ -1250,7 +1250,7 @@ static bool init_resource(void)
 {
     // Simplified version: only initialize basic functional modules
     
-    // Use LVGL 9.x built-in fonts - only use fonts enabled in configuration
+    // Use LVGL built-in fonts - only use fonts enabled in configuration
     R.fonts.size_16.normal = &lv_font_montserrat_16;
     R.fonts.size_22.bold = &lv_font_montserrat_22;
     R.fonts.size_24.normal = &lv_font_montserrat_24;
