@@ -16,11 +16,11 @@
 
 -include $(APPDIR)/Make.defs
 
-ifeq ($(CONFIG_LVX_USE_DEMO_MUSIC_PLAYER), y)
+ifeq ($(CONFIG_LVX_USE_DEMO_VELA_AUDIO), y)
 PROGNAME = music_player2
 PRIORITY = 100
 STACKSIZE = 16384  # Reduce stack size from 40KB to 16KB
-MODULE = $(CONFIG_LVX_USE_DEMO_MUSIC_PLAYER)
+MODULE = $(CONFIG_LVX_USE_DEMO_VELA_AUDIO)
 
 # Music player source files - using simulator compatible version
 CSRCS = music_player2.c audio_ctl.c wifi.c splash_screen.c playlist_manager.c font_config.c

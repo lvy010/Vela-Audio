@@ -22,7 +22,7 @@ ensure_cfg "CONFIG_BUILTIN=y"
 ensure_cfg "CONFIG_NSH_LIBRARY=y"
 ensure_cfg "CONFIG_NSH_BUILTIN_APPS=y"
 ensure_cfg "CONFIG_SYSTEM_NSH=y"
-ensure_cfg "CONFIG_LVX_USE_DEMO_MUSIC_PLAYER=y"
+ensure_cfg "CONFIG_LVX_USE_DEMO_VELA_AUDIO=y"
 ensure_cfg "CONFIG_LVX_MUSIC_PLAYER_DATA_ROOT=\"/data\""
 
 # Enable MP3 support and audio features

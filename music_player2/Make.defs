@@ -13,6 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-ifneq ($(CONFIG_LVX_USE_DEMO_MUSIC_PLAYER),)
+ifneq ($(CONFIG_LVX_USE_DEMO_VELA_AUDIO),)
 CONFIGURED_APPS += $(APPDIR)/packages/demos/music_player
 endif

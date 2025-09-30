@@ -63,32 +63,31 @@ ARM architecture embedded devices with audio output and display capabilities.
 
 ```
 music_player2/
-├── Core Modules/
-│   ├── music_player2.c
-│   ├── music_player2.h
-│   ├── music_player2_main.c
-│   ├── splash_screen.c
-│   ├── playlist_manager.c
-│   └── playlist_manager.h
-├── Audio Processing Module/
-│   ├── audio_ctl.c
-│   └── audio_ctl.h
-├── Font Configuration Module/
-│   ├── font_config.c
-│   └── font_config.h
-├── Network Module/
-│   ├── wifi.c
-│   └── wifi.h
-├── res/
-│   ├── fonts/
-│   ├── icons/
-│   ├── musics/
-│   └── config.json
-├── Build Configuration/
-│   ├── Kconfig
-│   ├── Makefile
-│   └── Make.defs
-└── README.md
+├── music_player2.c
+├── music_player2.h
+├── music_player2_main.c
+├── splash_screen.c
+├── playlist_manager.c
+├── playlist_manager.h
+├── audio_ctl.c
+├── audio_ctl.h
+├── font_config.c
+├── font_config.h
+├── wifi.c
+├── wifi.h
+├── Kconfig
+├── Makefile
+├── Make.defs
+├── README.md
+├── README-en.md
+├── docs/
+│   ├── ch/
+│   └── en/
+└── res/
+    ├── fonts/
+    ├── icons/
+    ├── musics/
+    └── config.json
 ```
 
 ## Getting Started
@@ -105,7 +104,7 @@ git clone <openvela-repo-url> && cd vela_code
 ### Configuration and Build
 ```bash
 # Configure music player
-echo "CONFIG_VELA_MUSIC_PLAYER=y" >> vendor/openvela/boards/vela/configs/goldfish-armeabi-v7a-ap/defconfig
+echo "CONFIG_LVX_USE_DEMO_VELA_AUDIO=y" >> vendor/openvela/boards/vela/configs/goldfish-armeabi-v7a-ap/defconfig
 echo 'CONFIG_LVX_MUSIC_PLAYER_DATA_ROOT="/data"' >> vendor/openvela/boards/vela/configs/goldfish-armeabi-v7a-ap/defconfig
 
 # Build project
